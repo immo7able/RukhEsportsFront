@@ -1,0 +1,52 @@
+.mc-slider .slick-slide {
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  transform-style: preserve-3d;
+}
+
+.mc-slider .slick-active {
+  transform: translateZ(0) scale(1);
+  opacity: 1;
+}
+
+.mc-slider .slick-slide:not(.slick-active) {
+  transform: rotateY(30deg) translateZ(-50px) scale(0.8);
+  opacity: 0.5;
+}
+
+
+.mc-slider .slick-dots li button:before {
+  font-size: 10px;
+  color: white; 
+}
+
+.mc-slider .slick-dots li.slick-active button:before {
+  color: white; 
+}
+
+
+.mc-slider .slick-dots li button:before {
+  transition: color 0.3s ease;
+}
+
+.mc-slick-prev,
+.mc-slick-next {
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mc-slick-prev {
+  left: 15px;
+}
+
+.mc-slick-next {
+  right: 15px;
+}
+
+.mc-slick-prev:before,
+.mc-slick-next:before {
+  color: rgb(155, 155, 155);
+  font-size: 30px;
+}
+
+

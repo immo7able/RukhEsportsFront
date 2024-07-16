@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Box } from '@mui/material';
+import NavBar from './components/Nav/NavBar';
+import HomePage from './pages/HomePage';
+import NewsPage from './pages/news/NewsPage';
+import NewsDetail from './components/News/NewsDetail';
+import SignUp from './components/Auth/SignUp';
+import Login from './components/Auth/Login';
+import Profile from './components/Auth/Profile';
+import TournamentsPage from './pages/Tournaments/TournamentsPage';
+import TournamentDetail from './components/Tournaments/TournamentDetail';
+import MatchesPage from './pages/Matches/MatchesPage';
+import MatchDetail from './components/Matches/MatchDetail';
+import TeamPage from './pages/Team/TeamPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import './styles/App.css';
 
-function App() {
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <NavBar isAuthenticated={isAuthenticated} />
+      <Box mt={12}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/newspage/*" element={<NewsPage />} />
+          <Route path="/newspage/:discipline/:id" element={<NewsDetail isAuthenticated={isAuthenticated} />} />
+          <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            path="/profile"
+            element={<ProtectedRoute element={Profile} isAuthenticated={isAuthenticated} />}
+          />
+          <Route path="/tournaments/*" element={<TournamentsPage />} />
+          <Route path="/tournaments/:type/:id" element={<TournamentDetail />} />
+          <Route path="/matches/*" element={<MatchesPage />} />
+          <Route path="/matches/:type/:id" element={<MatchDetail />} />
+          <Route path="/team/*" element={<TeamPage />} />
+        </Routes>
+      </Box>
+    </Router>
   );
-}
+};
 
 export default App;

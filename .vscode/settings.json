@@ -1,0 +1,20 @@
+{
+    "folder-color.pathColors": [
+        {
+            "folderPath": "rukh-esports/src/api/",
+            "color": "foldercolorizer.SpringGreen"
+        },
+        {
+            "folderPath": "rukh-esports/src/images/",
+            "color": "foldercolorizer.GrayishSilver"
+        },
+        {
+            "folderPath": "rukh-esports/src/components/",
+            "color": "foldercolorizer.HotPink"
+        },
+        {
+            "folderPath": "rukh-esports/src/pages/",
+            "color": "foldercolorizer.Coral"
+        }
+    ]
+}

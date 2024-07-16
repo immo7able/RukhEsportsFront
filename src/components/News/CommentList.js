@@ -1,0 +1,179 @@
+import React, { useState } from 'react';
+import {useNavigate } from 'react-router-dom';
+import { Box, Typography, Paper, Avatar, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import CommentForm from './CommentForm';
+
+const CommentPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: 'rgba(23, 54, 50, 0.85)',
+  padding: '30px',
+  borderRadius: '10px',
+  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+  marginBottom: '30px',
+  color: 'white',
+  position: 'relative',
+}));
+
+const ReplyPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: 'rgba(23, 54, 50, 0.75)',
+  border: '0.9px solid white',
+  padding: '20px',
+  borderRadius: '10px',
+  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+  marginBottom: '20px',
+  color: 'white',
+  marginLeft: '40px',
+}));
+
+const ReplyButton = styled(Button)(({ theme }) => ({
+  color: 'rgb(0,142,130, 0.8)',
+  ':hover': {
+    backgroundColor: '#008e82',
+    color: 'white',
+  },
+}));
+
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
+
+const CommentList = ({ comments, isMobile, isAuthenticated }) => {
+  const [replyingTo, setReplyingTo] = useState(null);
+  const navigate = useNavigate();
+
+  const handleReplyClick = (commentIndex) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    setReplyingTo(commentIndex);
+  };
+
+  const handleCommentSubmit = (reply, commentIndex) => {
+    comments[commentIndex].replies = comments[commentIndex].replies || [];
+    comments[commentIndex].replies.push(reply);
+    setReplyingTo(null);
+  };
+
+  const handleCancel = () => {
+    setReplyingTo(null);
+  };
+
+  return (
+    <>
+      {comments.map((comment, index) => (
+        <CommentPaper key={index}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar 
+                src={comment.avatar} 
+                alt={comment.username} 
+                sx={{ width: isMobile ? 40 : 50, height: isMobile ? 40 : 50, mr: 1 }} 
+              />
+              <Typography
+                variant="subtitle2"
+                color="white"
+                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', fontFamily: 'Oswald, serif' }}
+              >
+                {comment.username}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography
+                variant="subtitle2"
+                color="white"
+                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mr: 1, fontFamily: 'Oswald, serif' }}
+              >
+                {formatDate(comment.date)}
+              </Typography>
+             
+            </Box>
+          </Box>
+          <Typography
+            variant="body1"
+            sx={{
+              mb: 2,
+              color: 'white',
+              fontSize: isMobile ? '1rem' : '1.3rem',
+              fontFamily: 'Oswald, serif'
+            }}
+          >
+            {comment.content}
+          </Typography>
+          <ReplyButton onClick={() => handleReplyClick(index)} sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1.2rem', fontFamily: 'Oswald, serif' }}>
+            Ответить
+          </ReplyButton>
+          {replyingTo === index && (
+            <Box sx={{mb: 2 }}> 
+            <CommentForm 
+              isMobile={isMobile}
+              onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
+              onCancel={handleCancel}
+            />
+          </Box>
+          
+          )}
+          {comment.replies && comment.replies.map((reply, replyIndex) => (
+            <ReplyPaper key={replyIndex} elevation={3}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar 
+                    src={reply.avatar} 
+                    alt={reply.username} 
+                    sx={{ width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, mr: 1 }} 
+                  />
+                  <Typography
+                    variant="subtitle2"
+                    color="white"
+                    sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', fontFamily: 'Oswald, serif' }}
+                  >
+                    {reply.username}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography
+                    variant="subtitle2"
+                    color="white"
+                    sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', mr: 1, fontFamily: 'Oswald, serif' }}
+                  >
+                    {formatDate(reply.date)}
+                  </Typography>
+                  
+                </Box>
+              </Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  mb: 2,
+                  color: 'white',
+                  fontSize: isMobile ? '0.9rem' : '1.1rem', 
+                  fontFamily: 'Oswald, serif'
+                }}
+              >
+                {reply.content}
+              </Typography>
+            </ReplyPaper>
+          ))}
+        </CommentPaper>
+      ))}
+    </>
+  );
+};
+
+export default CommentList;
