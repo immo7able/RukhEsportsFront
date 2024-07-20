@@ -20,34 +20,48 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      console.log('Токен в localStorage:', token);
+      setIsAuthenticated(!!token);
+    };
+
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+    console.log('Обновление статуса авторизирован (isAuthenticated):', !!token);
+  }, [isAuthenticated]);
+
   return (
-    <Router>
-      <NavBar isAuthenticated={isAuthenticated} />
-      <Box mt={12}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/newspage/*" element={<NewsPage />} />
-          <Route path="/newspage/:discipline/:id" element={<NewsDetail isAuthenticated={isAuthenticated} />} />
-          <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route
-            path="/profile"
-            element={<ProtectedRoute element={Profile} isAuthenticated={isAuthenticated} />}
-          />
-          <Route path="/tournaments/*" element={<TournamentsPage />} />
-          <Route path="/tournaments/:type/:id" element={<TournamentDetail />} />
-          <Route path="/matches/*" element={<MatchesPage />} />
-          <Route path="/matches/:type/:id" element={<MatchDetail />} />
-          <Route path="/team/*" element={<TeamPage />} />
-        </Routes>
-      </Box>
-    </Router>
+      <Router>
+        <NavBar isAuthenticated={isAuthenticated} />
+        <Box mt={12}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/newspage/*" element={<NewsPage />} />
+            <Route path="/newspage/:discipline/:id" element={<NewsDetail isAuthenticated={isAuthenticated} />} />
+            <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+            <Route
+                path="/profile"
+                element={<ProtectedRoute element={Profile} isAuthenticated={isAuthenticated} />}
+            />
+            <Route path="/tournaments/*" element={<TournamentsPage />} />
+            <Route path="/tournaments/:type/:id" element={<TournamentDetail />} />
+            <Route path="/matches/*" element={<MatchesPage />} />
+            <Route path="/matches/:type/:id" element={<MatchDetail />} />
+            <Route path="/team/*" element={<TeamPage />} />
+          </Routes>
+        </Box>
+      </Router>
   );
 };
 
