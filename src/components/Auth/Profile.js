@@ -47,7 +47,7 @@ const Profile = () => {
         const { data } = await getProfile();
         setEmail(data.email);
         setNickname(data.nickname || '');
-        setProfileImage(data.profileImage || '');
+        setProfileImage(data.avatar || '');
       } catch (error) {
         setError('Ошибка при загрузке данных профиля');
       }
@@ -57,25 +57,50 @@ const Profile = () => {
 
   const handleUpdateEmail = async () => {
     try {
-      await updateEmail(email);
+      const response = await updateEmail(email);
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+      localStorage.setItem('token', response.data.token);
+      setError("");
     } catch (error) {
-      setError('Ошибка при обновлении email');
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("Непредвиденная ошибка");
+      }
     }
   };
 
   const handleUpdatePassword = async () => {
     try {
-      await updatePassword(password);
+      const response = await updatePassword(password);
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+      setError("");
     } catch (error) {
-      setError('Ошибка при обновлении пароля');
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("Непредвиденная ошибка");
+      }
     }
   };
 
   const handleSaveNickname = async () => {
     try {
-      await updateNickname(nickname);
+      const response = await updateNickname(nickname);
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+      setError("");
     } catch (error) {
-      setError('Ошибка при сохранении никнейма');
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("Непредвиденная ошибка");
+      }
     }
   };
 
@@ -92,10 +117,10 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const formData = new FormData();
-      formData.append('profileImage', file);
+      formData.append('avatar', file);
       try {
         const { data } = await uploadProfileImage(formData);
-        setProfileImage(data.profileImage);
+        setProfileImage(data.avatar);
       } catch (error) {
         setError('Ошибка при загрузке изображения профиля');
       }
@@ -129,50 +154,50 @@ const Profile = () => {
           alt="Profile Image"
           sx={{ width: 150, height: 150, marginRight: 4 }}
         />
-        <Button
-          variant="contained"
-          component="label"
-          sx={{ 
-            backgroundColor: '#008e82', 
-            borderRadius: '50%', 
-            color: '#fff', 
-            width: 50, 
-            height: 50, 
-            minWidth: 'auto', 
-            '&:hover': { backgroundColor: '#006f69' } 
-          }}
-        >
-          <UploadFileIcon />
-          <input
-            type="file"
-            hidden
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                if (file.size > 1024 * 1024) {
-                  setError('Размер превышает 1 мб');
-                  setTimeout(() => setError(''), 5000);
-                } else {
-                  handleProfileImageChange(e);
-                }
-              }
-            }}
-          />
-        </Button>
-      </Box>
+           <Button
+               variant="contained"
+               component="label"
+               sx={{
+                 backgroundColor: '#008e82',
+                 borderRadius: '50%',
+                 color: '#fff',
+                 width: 50,
+                 height: 50,
+                 minWidth: 'auto',
+                 '&:hover': {backgroundColor: '#006f69'}
+               }}
+           >
+             <UploadFileIcon/>
+             <input
+                 type="file"
+                 hidden
+                 onChange={(e) => {
+                   const file = e.target.files[0];
+                   if (file) {
+                     if (file.size > 1024 * 1024) {
+                       setError('Размер превышает 1 мб');
+                       setTimeout(() => setError(''), 5000);
+                     } else {
+                       handleProfileImageChange(e);
+                     }
+                   }
+                 }}
+             />
+           </Button>
+         </Box>
 
         <TextField
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          id="email"
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          InputLabelProps={{ style: { color: '#008e82' } }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': { borderColor: '#008e82' },
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            id="email"
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            InputLabelProps={{style: {color: '#008e82'}}}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: '#008e82' },
               '&:hover fieldset': { borderColor: '#008e82' },
               '&.Mui-focused fieldset': { borderColor: '#008e82' },
             },
