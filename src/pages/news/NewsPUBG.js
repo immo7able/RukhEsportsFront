@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import NewsList from '../../components/News/NewsList';
-import { getNewsItem } from '../../api/news'; 
+import { getAllNews } from '../../api/news';
 
 const NPUBG = () => {
   const [news, setNews] = useState([]);
@@ -12,8 +12,8 @@ const NPUBG = () => {
 
     const fetchNews = async () => {
       try {
-        const data = await getNewsItem('pubg');
-        setNews(data.data.pubg);
+        const response = await getAllNews('pubg');
+        setNews(response.data);
       } catch (error) {
         setError('Ошибка при загрузке данных новостей');
       }

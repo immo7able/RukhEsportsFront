@@ -14,6 +14,8 @@ import MatchesPage from './pages/Matches/MatchesPage';
 import MatchDetail from './components/Matches/MatchDetail';
 import TeamPage from './pages/Team/TeamPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminPanel from './admin/AdminPanel';
+
 import './styles/App.css';
 
 const App = () => {
@@ -46,6 +48,7 @@ const App = () => {
         <Box mt={12}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/admin" element={<AdminPanel />} />
             <Route path="/newspage/*" element={<NewsPage />} />
             <Route path="/newspage/:discipline/:id" element={<NewsDetail isAuthenticated={isAuthenticated} />} />
             <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
