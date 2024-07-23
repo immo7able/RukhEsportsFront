@@ -1,3 +1,3 @@
 import api from './api';
 
-export const getNewsItem = (discipline, id) => api.get(`/api/news/${discipline}/${id}`);
+export const getNewsItem = (discipline) => api.get(`/news/${discipline}`);

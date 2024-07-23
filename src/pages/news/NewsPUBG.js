@@ -13,7 +13,7 @@ const NPUBG = () => {
     const fetchNews = async () => {
       try {
         const data = await getNewsItem('pubg');
-        setNews(data);
+        setNews(data.data.pubg);
       } catch (error) {
         setError('Ошибка при загрузке данных новостей');
       }
