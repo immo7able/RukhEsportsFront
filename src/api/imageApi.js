@@ -13,16 +13,3 @@ export const getTopImage = async (page, selectedTab) => {
 };
 
 
-// страницы 
-
-// team
-// news
-// tournaments
-// matches
-
-
-// табы переключения
-
-// pubg
-// hok
-// mob
