@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, IconButton, Snackbar, Alert } from '@mui/material';
-import { getTeam } from '../../api/team';
+import { getTeams } from '../../api/team';
 import api from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const CreatePlayer = ({}) => {
+const CreatePlayer = () => {
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [img, setImg] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [teamId, setTeamId] = useState('');
   const [teams, setTeams] = useState([]);
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
@@ -19,7 +20,7 @@ const CreatePlayer = ({}) => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -46,6 +47,7 @@ const CreatePlayer = ({}) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -65,8 +67,19 @@ const CreatePlayer = ({}) => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    formData.append('name', name);
+    formData.append('content', content);
+    formData.append('image', imgUpl);
+    formData.append('team_id', teamId);
+    formData.append('socialMediaLinks', JSON.stringify(socialMediaLinks));
     try {
-      await api.post('/players', { nickname, name, content, img, fk_team: teamId, socialMediaLinks });
+      await api.post('/admin/createPlayer', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Игрок создан успешно!');
     } catch (error) {
       alert('Ошибка при создании игрока!');

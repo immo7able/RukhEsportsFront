@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api'; 
 
-const CreateTeam = ({}) => {
+const CreateTeam = () => {
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [img, setImg] = useState('');
   const [discipline, setDiscipline] = useState('');
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -12,6 +13,7 @@ const CreateTeam = ({}) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -31,8 +33,17 @@ const CreateTeam = ({}) => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('content', content);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
     try {
-      await api.post('/teams', { name, content, img, discipline });
+      await api.post('/admin/createTeam', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Команда создана успешно!');
     } catch (error) {
       alert('Ошибка при создании команды!');

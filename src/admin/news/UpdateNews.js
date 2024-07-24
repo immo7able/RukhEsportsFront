@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert} from '@mui/material';
 import api from '../../api/api';
-import { getNewsItem } from '../../api/news';
+import {getNews } from '../../api/news';
 
 const UpdateNews = () => {
   const [id, setId] = useState('');
@@ -9,6 +9,7 @@ const UpdateNews = () => {
   const [content, setContent] = useState('');
   const [discipline, setDiscipline] = useState('');
   const [img, setImg] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [newsItems, setNewsItems] = useState([]);
   const [selectedNews, setSelectedNews] = useState('');
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -17,7 +18,7 @@ const UpdateNews = () => {
   useEffect(() => {
     const fetchNewsItems = async () => {
       try {
-        const response = await getNewsItem();
+        const response = await getNews();
         setNewsItems(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке новостей:', error);
@@ -33,8 +34,8 @@ const UpdateNews = () => {
         setId(news.id);
         setTitle(news.title);
         setContent(news.content);
-        setDiscipline(news.discipline);
-        setImg(news.img);
+        setDiscipline(news.category.toUpperCase());
+        setImg(news.image);
       }
     }
   }, [selectedNews, newsItems]);
@@ -42,6 +43,7 @@ const UpdateNews = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -61,8 +63,17 @@ const UpdateNews = () => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
     try {
-      await api.put(`/news/${id}`, { title, content, discipline, img });
+      await api.put(`/admin/updateNews/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Новость обновлена успешно!');
     } catch (error) {
       alert('Ошибка при обновлении новости!');

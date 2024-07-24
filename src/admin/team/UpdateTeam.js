@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api'; 
-import { getTeam } from '../../api/team'; 
+import { getTeams } from '../../api/team';
 
 const UpdateTeam = () => {
   const [id, setId] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [img, setImg] = useState('');
@@ -17,7 +18,7 @@ const UpdateTeam = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -35,13 +36,14 @@ const UpdateTeam = () => {
         setName(team.name);
         setContent(team.content);
         setImg(team.img);
-        setDiscipline(team.discipline);
+        setDiscipline(team.discipline.toUpperCase());
       }
     }
   }, [selectedTeam, teams]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -61,8 +63,17 @@ const UpdateTeam = () => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('content', content);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
     try {
-      await api.put(`/teams/${id}`, { name, content, img, discipline });
+      await api.put(`/admin/updateTeam/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Команда обновлена успешно!');
     } catch (error) {
       alert('Ошибка при обновлении команды!');

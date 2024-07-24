@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import api from '../../api/api'; 
-import { getTeam } from '../../api/team'; 
+import { getTeams } from '../../api/team';
 
 const DeleteTeam = () => {
   const [id, setId] = useState('');
@@ -11,7 +11,7 @@ const DeleteTeam = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -32,7 +32,7 @@ const DeleteTeam = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.delete(`/teams/${id}`);
+      await api.delete(`/admin/deleteTeam/${id}`);
       alert('Команда удалена успешно!');
     } catch (error) {
       alert('Ошибка при удалении команды!');

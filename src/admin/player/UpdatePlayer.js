@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, IconButton, Snackbar, Alert } from '@mui/material';
-import { getTeam, getPlayer } from '../../api/team';
+import { getTeams, getPlayer } from '../../api/team';
 import api from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -22,7 +22,7 @@ const UpdatePlayer = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -51,8 +51,8 @@ const UpdatePlayer = () => {
         setName(player.name);
         setContent(player.content);
         setImg(player.img);
-        setTeamId(player.teamId);
-        setSocialMediaLinks(player.socialMediaLinks || [{ platform: '', url: '' }]);
+        setTeamId(player.team.id);
+        setSocialMediaLinks(JSON.parse(player.socialMediaLinks) || [{ platform: '', url: '' }]);
       }
     }
   }, [selectedPlayer, players]);

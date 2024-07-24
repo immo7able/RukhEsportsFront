@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import api from '../../api/api';
-import { getNewsItem } from '../../api/news';
+import { getNews } from '../../api/news';
 
 const DeleteNews = () => {
   const [id, setId] = useState('');
@@ -11,7 +11,7 @@ const DeleteNews = () => {
   useEffect(() => {
     const fetchNewsItems = async () => {
       try {
-        const response = await getNewsItem();
+        const response = await getNews();
         setNewsItems(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке новостей:', error);
@@ -31,7 +31,7 @@ const DeleteNews = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.delete(`/news/${id}`);
+      await api.delete(`/admin/deleteNews/${id}`);
       alert('Новость удалена успешно!');
     } catch (error) {
       alert('Ошибка при удалении новости!');
