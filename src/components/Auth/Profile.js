@@ -44,11 +44,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await getProfile();
-        setEmail(data.email);
-        setNickname(data.nickname || '');
-        setProfileImage(data.avatar || '');
+        const response = await getProfile();
+        setEmail(response.data.email);
+        setNickname(response.data.nickname || '');
+        setProfileImage(response.data.avatar || '');
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
         setError('Ошибка при загрузке данных профиля');
       }
     };

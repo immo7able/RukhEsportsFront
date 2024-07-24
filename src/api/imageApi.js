@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getTopImage = async (page, selectedTab) => {
   try {
-    const response = await axios.get('/api/images', {
+    const response = await axios.get('/images', {
       params: { page, tab: selectedTab },
     });
     return response.data.url;
