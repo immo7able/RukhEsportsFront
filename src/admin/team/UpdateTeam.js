@@ -29,6 +29,17 @@ const UpdateTeam = () => {
   }, []);
 
   useEffect(() => {
+    const fetchImage = async (imageUrl) => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'image.jpg', { type: blob.type });
+        return file;
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        return null;
+      }
+    };
     if (selectedTeam) {
       const team = teams.find((item) => item.id === selectedTeam);
       if (team) {
@@ -36,6 +47,11 @@ const UpdateTeam = () => {
         setName(team.name);
         setContent(team.content);
         setImg(team.img);
+        fetchImage(team.img).then((file) => {
+          if (file) {
+            setImgUpl(file);
+          }
+        });
         setDiscipline(team.discipline.toUpperCase());
       }
     }

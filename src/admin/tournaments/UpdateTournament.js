@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api'; 
-import { getTournament } from '../../api/tournaments'; 
+import { getTournaments } from '../../api/tournaments';
 
 const UpdateTournament = () => {
   const [id, setId] = useState('');
@@ -10,6 +10,7 @@ const UpdateTournament = () => {
   const [status, setStatus] = useState('');
   const [result, setResult] = useState('');
   const [img, setImg] = useState('');
+    const [imgUpl, setImgUpl] = useState(null);
   const [discipline, setDiscipline] = useState('');
   const [date, setDate] = useState('');
   const [prizepool, setPrizepool] = useState('');
@@ -21,7 +22,7 @@ const UpdateTournament = () => {
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await getTournament();
+        const response = await getTournaments();
         setTournaments(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке турниров:', error);
@@ -32,6 +33,17 @@ const UpdateTournament = () => {
   }, []);
 
   useEffect(() => {
+      const fetchImage = async (imageUrl) => {
+          try {
+              const response = await fetch(imageUrl);
+              const blob = await response.blob();
+              const file = new File([blob], 'image.jpg', { type: blob.type });
+              return file;
+          } catch (error) {
+              console.error('Ошибка при загрузке изображения:', error);
+              return null;
+          }
+      };
     if (selectedTournament) {
       const tournament = tournaments.find((item) => item.id === selectedTournament);
       if (tournament) {
@@ -41,6 +53,11 @@ const UpdateTournament = () => {
         setStatus(tournament.status);
         setResult(tournament.result);
         setImg(tournament.img);
+          fetchImage(tournament.img).then((file) => {
+              if (file) {
+                  setImgUpl(file);
+              }
+          });
         setDiscipline(tournament.discipline);
         setDate(tournament.date);
         setPrizepool(tournament.prizepool);
@@ -50,6 +67,7 @@ const UpdateTournament = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+      setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -69,8 +87,21 @@ const UpdateTournament = () => {
   };
 
   const handleSubmit = async () => {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('content', content);
+      formData.append('discipline', discipline);
+      formData.append('image', imgUpl);
+      formData.append('status', status);
+      formData.append('result', result);
+      formData.append('date', date);
+      formData.append('prizepool', prizepool);
     try {
-      await api.put(`/tournaments/${id}`, { name, content, status, result, img, discipline, date, prizepool });
+      await api.put(`/admin/updateTournament/${id}`, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      });
       alert('Турнир обновлен успешно!');
     } catch (error) {
       alert('Ошибка при обновлении турнира!');

@@ -32,7 +32,7 @@ const DeleteTournament = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.delete(`/tournaments/${id}`);
+      await api.delete(`/admin/deleteTournament/${id}`);
       alert('Турнир удален успешно!');
     } catch (error) {
       alert('Ошибка при удалении турнира!');

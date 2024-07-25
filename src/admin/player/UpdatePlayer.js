@@ -12,6 +12,7 @@ const UpdatePlayer = () => {
   const [content, setContent] = useState('');
   const [img, setImg] = useState('');
   const [teamId, setTeamId] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [teams, setTeams] = useState([]);
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState('');
@@ -43,6 +44,18 @@ const UpdatePlayer = () => {
   }, []);
 
   useEffect(() => {
+    const fetchImage = async (imageUrl) => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'image.jpg', { type: blob.type });
+        return file;
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        return null;
+      }
+    };
+
     if (selectedPlayer) {
       const player = players.find((item) => item.id === selectedPlayer);
       if (player) {
@@ -51,6 +64,13 @@ const UpdatePlayer = () => {
         setName(player.name);
         setContent(player.content);
         setImg(player.img);
+
+        fetchImage(player.img).then((file) => {
+          if (file) {
+            setImgUpl(file);
+          }
+        });
+
         setTeamId(player.team.id);
         setSocialMediaLinks(JSON.parse(player.socialMediaLinks) || [{ platform: '', url: '' }]);
       }
@@ -74,6 +94,7 @@ const UpdatePlayer = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -93,8 +114,19 @@ const UpdatePlayer = () => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('nickname', nickname);
+    formData.append('name', name);
+    formData.append('content', content);
+    formData.append('image', imgUpl);
+    formData.append('team_id', teamId);
+    formData.append('socialMediaLinks', JSON.stringify(socialMediaLinks));
     try {
-      await api.put(`/players/${id}`, { nickname, name, content, img, fk_team: teamId, socialMediaLinks });
+      await api.put(`/admin/updatePlayer/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Игрок обновлен успешно!');
     } catch (error) {
       alert('Ошибка при обновлении игрока!');

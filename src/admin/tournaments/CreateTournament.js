@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api'; 
 
-const CreateTournament = ({ }) => {
+const CreateTournament = () => {
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [status, setStatus] = useState('');
   const [result, setResult] = useState('');
   const [img, setImg] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [discipline, setDiscipline] = useState('');
   const [date, setDate] = useState('');
   const [prizepool, setPrizepool] = useState('');
@@ -16,6 +17,7 @@ const CreateTournament = ({ }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -35,8 +37,21 @@ const CreateTournament = ({ }) => {
   };
 
   const handleSubmit = async () => {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('content', content);
+      formData.append('discipline', discipline);
+      formData.append('image', imgUpl);
+      formData.append('status', status);
+      formData.append('result', result);
+      formData.append('date', date);
+      formData.append('prizepool', prizepool);
     try {
-      await api.post('/tournaments', { name, content, status, result, img, discipline, date, prizepool });
+      await api.post('/admin/createTournament', formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      });
       alert('Турнир создан успешно!');
 
     } catch (error) {

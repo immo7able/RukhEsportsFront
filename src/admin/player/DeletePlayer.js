@@ -32,7 +32,7 @@ const DeletePlayer = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.delete(`/players/${id}`);
+      await api.delete(`/admin/deletePlayer/${id}`);
       alert('Игрок удален успешно!');
     } catch (error) {
       alert('Ошибка при удалении игрока!');

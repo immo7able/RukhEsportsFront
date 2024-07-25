@@ -28,6 +28,17 @@ const UpdateNews = () => {
   }, []);
 
   useEffect(() => {
+    const fetchImage = async (imageUrl) => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'image.jpg', { type: blob.type });
+        return file;
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        return null;
+      }
+    };
     if (selectedNews) {
       const news = newsItems.find((item) => item.id === selectedNews);
       if (news) {
@@ -35,6 +46,11 @@ const UpdateNews = () => {
         setTitle(news.title);
         setContent(news.content);
         setDiscipline(news.category.toUpperCase());
+        fetchImage(news.image).then((file) => {
+          if (file) {
+            setImgUpl(file);
+          }
+        });
         setImg(news.image);
       }
     }
