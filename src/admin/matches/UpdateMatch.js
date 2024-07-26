@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api'; 
-import { getTournament } from '../../api/tournaments'; 
-import { getTeam } from '../../api/team'; 
-import { getMatches } from '../../api/matches';
+import { getTournaments } from '../../api/tournaments';
+import { getTeams } from '../../api/team';
+import {getAllMatches} from '../../api/matches';
 
 const UpdateMatch = () => {
   const [id, setId] = useState('');
@@ -28,7 +28,7 @@ const UpdateMatch = () => {
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await getTournament();
+        const response = await getTournaments();
         setTournaments(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке турниров:', error);
@@ -37,7 +37,7 @@ const UpdateMatch = () => {
 
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -46,7 +46,7 @@ const UpdateMatch = () => {
 
     const fetchMatches = async () => {
       try {
-        const response = await getMatches();
+        const response = await getAllMatches();
         setMatches(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке матчей:', error);
@@ -62,6 +62,7 @@ const UpdateMatch = () => {
   useEffect(() => {
     if (selectedMatch) {
       const match = matches.find((item) => item.id === selectedMatch);
+      console.log(match);
       if (match) {
         setId(match.id);
         setTitle(match.title);
@@ -71,9 +72,9 @@ const UpdateMatch = () => {
         setYoutubeUrl(match.youtubeUrl);
         setDiscipline(match.discipline);
         setImg(match.img);
-        setTournamentId(match.tournamentId);
-        setTeam1Id(match.team1Id);
-        setTeam2Id(match.team2Id);
+        setTournamentId(match.tournament.id);
+        setTeam1Id(match.team1.id);
+        setTeam2Id(match.team2.id);
       }
     }
   }, [selectedMatch, matches]);

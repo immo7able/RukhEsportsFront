@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import api from '../../api/api';
-import { getTournament } from '../../api/tournaments';
-import { getTeam } from '../../api/team';
+import { getTournaments } from '../../api/tournaments';
+import { getTeams } from '../../api/team';
 
-const CreateMatch = ({}) => {
+const CreateMatch = () => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [result, setResult] = useState('');
@@ -12,6 +12,7 @@ const CreateMatch = ({}) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [discipline, setDiscipline] = useState('');
   const [img, setImg] = useState(null);
+  const [imgUpl, setImgUpl] = useState(null);
   const [tournamentId, setTournamentId] = useState('');
   const [team1Id, setTeam1Id] = useState('');
   const [team2Id, setTeam2Id] = useState('');
@@ -23,7 +24,7 @@ const CreateMatch = ({}) => {
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await getTournament();
+        const response = await getTournaments();
         setTournaments(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке турниров:', error);
@@ -32,7 +33,7 @@ const CreateMatch = ({}) => {
 
     const fetchTeams = async () => {
       try {
-        const response = await getTeam();
+        const response = await getTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -45,6 +46,7 @@ const CreateMatch = ({}) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -64,12 +66,23 @@ const CreateMatch = ({}) => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('date', date);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
+    formData.append('result', result);
+    formData.append('status', status);
+    formData.append('youtubeUrl', youtubeUrl);
+    formData.append('tournamentId', tournamentId);
+    formData.append('team1Id', team1Id);
+    formData.append('team2Id', team2Id);
     try {
-      const matchResponse = await api.post('/matches', { title, date, result, status, youtubeUrl, discipline, img, fk_tournament: tournamentId });
-      const matchId = matchResponse.data.id;
-
-      await api.post('/match_team', { match_id: matchId, team_id: team1Id });
-      await api.post('/match_team', { match_id: matchId, team_id: team2Id });
+      await api.post('/admin/createMatch', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       alert('Матч создан успешно!');
     } catch (error) {

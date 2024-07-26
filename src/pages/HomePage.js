@@ -6,9 +6,9 @@ import Footer from '../components/Footer';
 import logo1 from '../images/musruk2.png';
 import logo2 from '../images/fin2.png';
 import logo3 from '../images/ff2.png';
-import { getMatches } from '../api/matches';
-import { getTournament } from '../api/tournaments'; 
-import { getNewsItem } from '../api/news';
+import {getMatches} from '../api/matches';
+import { getTournaments } from '../api/tournaments';
+import { getNews} from '../api/news';
 import { getSliderImage } from '../api/slider';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -43,7 +43,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await getTournament();
+        const response = await getTournaments();
         setTournaments(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке турниров:', error);
@@ -61,7 +61,7 @@ const HomePage = () => {
 
     const fetchNewsItems = async () => {
       try {
-        const response = await getNewsItem();
+        const response = await getNews();
         setNewsItems(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке новостей:', error);
@@ -126,11 +126,11 @@ const HomePage = () => {
         <Slider {...settings}>
           {slides.map((slide, index) => (
             slide.type ? (
-              <Box 
-                key={index} 
-                component={Link} 
+              <Box
+                key={index}
+                component={Link}
                 to={`/newspage/${slide.type}/${slide.id}`}
-                state={{ from: `/newspage/${slide.type}` }} 
+                state={{ from: `/newspage/${slide.type}` }}
                 sx={{ position: 'relative', mb: 4, height: '400px', textDecoration: 'none' }}
               >
                 <img src={slide.image} alt={slide.title} style={{ width: '100%', height: '400px', borderRadius: '35px', objectFit: 'cover' }} />
@@ -198,22 +198,22 @@ const HomePage = () => {
         </Slider>
 
         <Box sx={{ mb: isMobile ? 6 : 5 }}>
-          <TournamentTable tournaments={tournaments.slice(0, 4)} /> 
+          <TournamentTable tournaments={tournaments.slice(0, 4)} />
           <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Button 
-              component={Link} 
-              to="/tournaments/pubg" 
-              variant="contained" 
-              color="primary" 
-              sx={{ 
-                backgroundColor: '#008e82', 
+            <Button
+              component={Link}
+              to="/tournaments/pubg"
+              variant="contained"
+              color="primary"
+              sx={{
+                backgroundColor: '#008e82',
                 borderRadius: '40px',
-                ':hover': { 
-                  backgroundColor: '#145a2b' 
-                }, 
-                fontSize: isMobile ? '1rem' : '1rem', 
+                ':hover': {
+                  backgroundColor: '#145a2b'
+                },
+                fontSize: isMobile ? '1rem' : '1rem',
                 fontFamily: 'Oswald, serif',
-                padding: isMobile ? '8px 16px' : '12px 24px' 
+                padding: isMobile ? '8px 16px' : '12px 24px'
               }}
             >
               Больше турниров
@@ -224,20 +224,20 @@ const HomePage = () => {
         <Box>
           <MatchesTable matches={matches.slice(0, 6)} isMobile={isMobile} />
           <Box sx={{ textAlign: 'center', mt: isMobile ? 5 : 2 }}>
-            <Button 
-              component={Link} 
-              to="/matches/pubg" 
-              variant="contained" 
-              color="primary" 
-              sx={{ 
-                backgroundColor: '#008e82', 
+            <Button
+              component={Link}
+              to="/matches/pubg"
+              variant="contained"
+              color="primary"
+              sx={{
+                backgroundColor: '#008e82',
                 borderRadius: '40px',
-                ':hover': { 
-                  backgroundColor: '#145a2b' 
-                }, 
-                fontSize: isMobile ? '1rem' : '1rem', 
+                ':hover': {
+                  backgroundColor: '#145a2b'
+                },
+                fontSize: isMobile ? '1rem' : '1rem',
                 fontFamily: 'Oswald, serif',
-                padding: isMobile ? '8px 16px' : '12px 24px' 
+                padding: isMobile ? '8px 16px' : '12px 24px'
               }}
             >
               Больше матчей
@@ -246,7 +246,7 @@ const HomePage = () => {
         </Box>
 
       </Container>
-      
+
       <Footer />
     </Box>
   );

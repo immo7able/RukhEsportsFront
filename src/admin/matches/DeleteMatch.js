@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import api from '../../api/api'; 
-import { getMatches } from '../../api/matches';
+import {getAllMatches} from '../../api/matches';
 
 const DeleteMatch = () => {
   const [id, setId] = useState('');
@@ -11,7 +11,7 @@ const DeleteMatch = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await getMatches();
+        const response = await getAllMatches();
         setMatches(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке матчей:', error);
@@ -32,7 +32,7 @@ const DeleteMatch = () => {
 
   const handleSubmit = async () => {
     try {
-      await api.delete(`/matches/${id}`);
+      await api.delete(`/admin/deleteMatch/${id}`);
       alert('Матч удален успешно!');
     } catch (error) {
       alert('Ошибка при удалении матча!');
