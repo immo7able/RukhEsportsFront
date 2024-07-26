@@ -15,11 +15,11 @@ const TEAMHOK = () => {
     const fetchTeamData = async () => {
       try {
         const teamData = await getTeam('hok');
-        setTeam(teamData);
+        setTeam(teamData.data);
         
-        if (teamData && teamData.id) {
-          const playersData = await getPlayer(teamData.id);
-          setPlayers(playersData);
+        if (teamData && teamData.data.id) {
+          const playersData = await getPlayer(teamData.data.id);
+          setPlayers(playersData.data);
         }
       } catch (error) {
         setError('Ошибка при загрузке данных команды или игроков');

@@ -4,7 +4,7 @@ import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 
 const MatchCard = ({ match, isMobile, from }) => (
   <Link 
-    to={`/matches/${match.type}/${match.id}`}
+    to={`/matches/${match.discipline}/${match.id}`}
     state={{ from: from }}
     style={{ textDecoration: 'none' }}
   >
@@ -48,16 +48,16 @@ const MatchCard = ({ match, isMobile, from }) => (
         <Typography variant="h6" sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem', mb: 2 }}>{match.title}</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '33%', marginBottom: 4 }}>
-            <img src={match.team1Logo} alt={match.team1} style={{ height: isMobile ? 50 : 100 }} />
-            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.team1}</Typography>
+            <img src={match.team1.img} alt={match.team1.name} style={{ height: isMobile ? 50 : 100 }} />
+            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.team1.name}</Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '33%', marginBottom: 4 }}>
             <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.date}</Typography>
             <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.time}</Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '33%', marginBottom: 4 }}>
-            <img src={match.team2Logo} alt={match.team2} style={{ height: isMobile ? 50 : 100 }} />
-            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.team2}</Typography>
+            <img src={match.team2.img} alt={match.team2.name} style={{ height: isMobile ? 50 : 100 }} />
+            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.team2.name}</Typography>
           </Box>
         </Box>
       </CardContent>

@@ -8,14 +8,14 @@ const MatchesTable = ({ matches, isMobile, from }) => {
       {matches.map((match) => (
         <Link 
           key={match.id} 
-          to={`/matches/${match.type}/${match.id}`}
+          to={`/matches/${match.discipline}/${match.id}`}
           state={{ from: from }}
           style={{ textDecoration: 'none', flexBasis: isMobile ? 'calc(50% - 16px)' : 'auto',  }}
         >
           <Card 
             sx={{ 
               position: 'relative', 
-             
+
               border: '4px solid transparent', 
               background: 'radial-gradient(circle, rgb(0,87,80), rgba(128,0,128,0.5))', 
               borderRadius: '16px', 
@@ -30,7 +30,7 @@ const MatchesTable = ({ matches, isMobile, from }) => {
                 height: isMobile ? 100 : 320, 
                 objectFit: 'cover', 
               }} 
-              image={match.img} 
+              image={match.img}
               alt="Match Image" 
             />
             <CardContent
@@ -63,15 +63,15 @@ const MatchesTable = ({ matches, isMobile, from }) => {
 </Typography>
 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: isMobile ? '30%' : '25%', marginBottom: 4 }}>
-    <img src={match.team1Logo} alt={match.team1} style={{ height: isMobile ? 40 : 70 }} />
+    <img src={match.team1.img} alt={match.team1.name} style={{ height: isMobile ? 40 : 70 }} />
     <Typography sx={{ fontFamily: 'Oswald, serif', fontSize: isMobile ? '0.9rem' : '1.3rem' }}>
-      {match.team1}
+      {match.team1.name}
     </Typography>
   </Box>
   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: isMobile ? '60%' : '40%', marginBottom: 4 }}>
-    <img src={match.team2Logo} alt={match.team2} style={{ height: isMobile ? 40 : 70 }} />
+    <img src={match.team2.img} alt={match.team2.name} style={{ height: isMobile ? 40 : 70 }} />
     <Typography sx={{ fontFamily: 'Oswald, serif', fontSize: isMobile ? '1rem' : '1.3rem' }}>
-      {match.team2}
+      {match.team2.name}
     </Typography>
   </Box>
               </Box>

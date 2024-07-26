@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import TeamInfo from './TeamInfo';
-import { getTeam, getPlayer } from '../../api/team';
+import { getTeam} from '../../api/team';
 
 const TEAMPUBG = () => {
   const [team, setTeam] = useState(null);
-  const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -15,12 +14,7 @@ const TEAMPUBG = () => {
     const fetchTeamData = async () => {
       try {
         const teamData = await getTeam('pubg');
-        setTeam(teamData);
-        
-        if (teamData && teamData.id) {
-          const playersData = await getPlayer(teamData.id);
-          setPlayers(playersData);
-        }
+        setTeam(teamData.data);
       } catch (error) {
         setError('Ошибка при загрузке данных команды или игроков');
       }
@@ -46,7 +40,7 @@ const TEAMPUBG = () => {
     return <Typography variant="h6" color="error">Команда не найдена.</Typography>;
   }
 
-  return <TeamInfo team={team} players={players} />;
+  return <TeamInfo team={team} />;
 };
 
 export default TEAMPUBG;

@@ -43,15 +43,15 @@ const MatchDetail = ({ isAuthenticated }) => {
       setLoading(true);
       setError(null);
       try {
-        const data = await getMatch(id);
-        setMatch(data);
+        const data = await getMatch(type, id);
+        setMatch(data.data);
       } catch (error) {
         setError('Матч не найден.');
       }
       setLoading(false);
     };
     fetchMatch();
-  }, [id]);
+  }, [type, id]);
 
   if (loading) {
     return (

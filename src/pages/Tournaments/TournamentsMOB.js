@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import TournamentList from '../../components/Tournaments/TournamentList';
 import TournamentsTabs from '../../components/Tournaments/TournamentsTabs';
-import { getTournament } from '../../api/tournaments'; 
+import { getTournamentsByDiscipline} from '../../api/tournaments';
 
 
 const TMOB = () => {
@@ -15,8 +15,8 @@ const TMOB = () => {
     
     const fetchTournaments = async () => {
       try {
-        const data = await getTournament('mob');
-        setTournaments(data);
+        const data = await getTournamentsByDiscipline('mob');
+        setTournaments(data.data);
       } catch (error) {
         setError('Ошибка при загрузке данных турниров');
       }

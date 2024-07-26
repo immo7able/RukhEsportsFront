@@ -83,10 +83,10 @@ const TeamInfo = ({ team }) => {
                     {player.name}, {player.age}
                   </Typography>
                   <Box sx={{ mt: 2 }}>
-                    {player.socialMediaLinks && player.socialMediaLinks.map((link, index) => (
-                      <a key={index} href={link} target="_blank" rel="noopener noreferrer" style={{ margin: '0 10px', color: 'white', fontSize: isMobile ? '1.5rem' : '2rem' }}>
-                        {renderIcon(link)}
-                      </a>
+                    {player.socialMediaLinks && JSON.parse(player.socialMediaLinks).map((link, index) => (
+                        <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" style={{ margin: '0 10px', color: 'white', fontSize: isMobile ? '1.5rem' : '2rem' }}>
+                          {renderIcon(link.url)}
+                        </a>
                     ))}
                   </Box>
                 </Box>

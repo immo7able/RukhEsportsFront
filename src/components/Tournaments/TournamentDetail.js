@@ -50,11 +50,11 @@ const TournamentDetail = ({ isAuthenticated }) => {
       setError(null);
 
       try {
-        const tournamentData = await getTournament(id);
-        setTournament(tournamentData);
+        const tournamentData = await getTournament(type, id);
+        setTournament(tournamentData.data);
 
         const matchesData = await getMatches(id);
-        setMatches(matchesData);
+        setMatches(matchesData.data);
       } catch (error) {
         setError(error.message || 'Ошибка при загрузке данных.');
       }
@@ -63,7 +63,7 @@ const TournamentDetail = ({ isAuthenticated }) => {
     };
 
     fetchTournamentAndMatches();
-  }, [id]);
+  }, [type, id]);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -122,7 +122,7 @@ const TournamentDetail = ({ isAuthenticated }) => {
           </Box>
 
           <Box>
-            {matches.filter(match => match.status === selectedTab).map(match => (
+            {matches.filter(match => match.status.toLowerCase() === selectedTab.toLowerCase()).map(match => (
               <MatchCard
                 key={match.id}
                 match={{ ...match, type: match.type || tournament.type }}

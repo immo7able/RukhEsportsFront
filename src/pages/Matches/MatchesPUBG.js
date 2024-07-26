@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import MatchesList from '../../components/Matches/MatchList';
 import MatchesTabs from '../../components/Matches/MatchTabs';
-import { getMatches } from '../../api/matches'; 
+import { getMatchesByDiscipline} from '../../api/matches';
 
 const MPUBG = () => {
   const [selectedTab, setSelectedTab] = useState('ongoing');
@@ -13,8 +13,8 @@ const MPUBG = () => {
 useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const data = await getMatches('pubg');
-        setMatches(data);
+        const data = await getMatchesByDiscipline('pubg');
+        setMatches(data.data);
       } catch (error) {
         setError('Ошибка при загрузке данных матчей');
       }

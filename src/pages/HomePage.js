@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import logo1 from '../images/musruk2.png';
 import logo2 from '../images/fin2.png';
 import logo3 from '../images/ff2.png';
-import {getMatches} from '../api/matches';
+import {getAllMatches} from '../api/matches';
 import { getTournaments } from '../api/tournaments';
 import { getNews} from '../api/news';
 import { getSliderImage } from '../api/slider';
@@ -52,7 +52,7 @@ const HomePage = () => {
 
     const fetchMatches = async () => {
       try {
-        const response = await getMatches();
+        const response = await getAllMatches();
         setMatches(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке матчей:', error);

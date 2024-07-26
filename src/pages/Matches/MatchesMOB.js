@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import MatchesList from '../../components/Matches/MatchList';
 import MatchesTabs from '../../components/Matches/MatchTabs';
-import { getMatches } from '../../api/matches'; 
+import { getMatchesByDiscipline} from '../../api/matches';
 
 
 const MMOB = () => {
@@ -14,8 +14,8 @@ const MMOB = () => {
 useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const data = await getMatches('mob');
-        setMatches(data);
+        const data = await getMatchesByDiscipline('mob');
+        setMatches(data.data);
       } catch (error) {
         setError('Ошибка при загрузке данных матчей');
       }
