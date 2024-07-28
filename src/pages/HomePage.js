@@ -202,7 +202,7 @@ const HomePage = () => {
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Button
               component={Link}
-              to="/tournaments/pubg"
+              to="/tournaments/"
               variant="contained"
               color="primary"
               sx={{
