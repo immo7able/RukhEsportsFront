@@ -2,6 +2,11 @@ import React from 'react';
 import { Box, Typography, Card, CardMedia, CardContent, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
 
 
 const truncateText = (text, maxLength) => {
@@ -85,7 +90,8 @@ const NewsCard = ({ newsItem, isMobile }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
   <Typography sx={{ fontSize: isMobile ? 20 : 25, color: 'white',fontFamily: 'Oswald, serif', }}>
-    {newsItem.date}
+  {formatDate(newsItem.date)}
+
   </Typography>
   </Box>
         </Box>
