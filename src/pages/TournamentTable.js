@@ -9,7 +9,7 @@ const TournamentTable = ({ tournaments, from }) => {
     <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: isMobile ?  0:2 }}>
       {tournaments.map((tournament) => (
         <Link
-          to={`/tournaments/${tournament.type}/${tournament.id}`}
+          to={`/tournaments/${tournament.discipline}/${tournament.id}`}
           state={{ from }}
           style={{ textDecoration: 'none' }}
           key={tournament.id}
