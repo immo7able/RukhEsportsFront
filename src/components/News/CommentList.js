@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Avatar, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CommentForm from './CommentForm';
+import { addComment } from '../../api/comments';
 
 const CommentPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'rgba(23, 54, 50, 0.85)',
@@ -39,32 +40,108 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-GB', options).split('/').join('-');
 };
 
-const CommentList = ({ comments, isMobile, isAuthenticated }) => {
+const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) => {
   const [replyingTo, setReplyingTo] = useState(null);
+  const [localComments, setLocalComments] = useState(comments);
   const navigate = useNavigate();
 
-  const handleReplyClick = (commentIndex) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
+  const handleReplyClick = async (commentIndex) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+    
+      setReplyingTo(commentIndex);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        console.error(error.response.data.error);
+      } else {
+        console.error("Непредвиденная ошибка", error);
+      }
     }
-    setReplyingTo(commentIndex);
   };
 
-  const handleCommentSubmit = (reply, commentIndex) => {
-    comments[commentIndex].replies = comments[commentIndex].replies || [];
-    comments[commentIndex].replies.push(reply);
-    setReplyingTo(null);
+  const handleCommentSubmit = async (reply, commentIndex) => {
+    try {
+      const parentId = localComments[commentIndex].id;
+      console.log('Отправка данных на сервер:', { reply, parentId });
+      const response = await addComment(newsId, reply, parentId);
+      const updatedComments = localComments.map((comment, idx) => {
+        if (idx === commentIndex) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), response.data]
+          };
+        }
+        return comment;
+      });
+      setLocalComments(updatedComments);
+      setReplyingTo(null);
+    } catch (error) {
+      console.error('Ошибка при добавлении ответа:', error);
+    }
   };
 
   const handleCancel = () => {
     setReplyingTo(null);
   };
 
+  const renderReplies = (replies) => {
+    return replies.map((reply, replyIndex) => (
+      <ReplyPaper key={reply.id || `${reply.parent_comment_id}-${replyIndex}`} elevation={3}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar 
+              src={reply.avatar} 
+              alt={reply.username} 
+              sx={{ width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, mr: 1 }} 
+            />
+            <Typography
+              variant="subtitle2"
+              color="white"
+              sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', fontFamily: 'Oswald, serif' }}
+            >
+              {reply.username}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography
+              variant="subtitle2"
+              color="white"
+              sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', mr: 1, fontFamily: 'Oswald, serif' }}
+            >
+              {formatDate(reply.date)}
+            </Typography>
+          </Box>
+        </Box>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 2,
+            color: 'white',
+            fontSize: isMobile ? '0.9rem' : '1.1rem', 
+            fontFamily: 'Oswald, serif'
+          }}
+        >
+          {reply.content}
+        </Typography>
+      </ReplyPaper>
+    ));
+  };
+
   return (
     <>
-      {comments.map((comment, index) => (
-        <CommentPaper key={index}>
+      {localComments.map((comment, index) => (
+        <CommentPaper key={comment.id || index}>
           <Box
             sx={{
               display: 'flex',
@@ -84,7 +161,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated }) => {
                 color="white"
                 sx={{ fontSize: isMobile ? '1rem' : '1.3rem', fontFamily: 'Oswald, serif' }}
               >
-                {comment.username}
+                {comment.nickname}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -95,7 +172,6 @@ const CommentList = ({ comments, isMobile, isAuthenticated }) => {
               >
                 {formatDate(comment.date)}
               </Typography>
-             
             </Box>
           </Box>
           <Typography
@@ -109,67 +185,20 @@ const CommentList = ({ comments, isMobile, isAuthenticated }) => {
           >
             {comment.content}
           </Typography>
-          <ReplyButton onClick={() => handleReplyClick(index)} sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1.2rem', fontFamily: 'Oswald, serif' }}>
+          {/* <ReplyButton onClick={() => handleReplyClick(index)} sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1.2rem', fontFamily: 'Oswald, serif' }}>
             Ответить
-          </ReplyButton>
+          </ReplyButton> */}
           {replyingTo === index && (
             <Box sx={{mb: 2 }}> 
-            <CommentForm 
-              isMobile={isMobile}
-              onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
-              onCancel={handleCancel}
-            />
-          </Box>
-          
+              <CommentForm 
+                isMobile={isMobile}
+                onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
+                onCancel={handleCancel}
+                username={username}
+              />
+            </Box>
           )}
-          {comment.replies && comment.replies.map((reply, replyIndex) => (
-            <ReplyPaper key={replyIndex} elevation={3}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mb: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar 
-                    src={reply.avatar} 
-                    alt={reply.username} 
-                    sx={{ width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, mr: 1 }} 
-                  />
-                  <Typography
-                    variant="subtitle2"
-                    color="white"
-                    sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', fontFamily: 'Oswald, serif' }}
-                  >
-                    {reply.username}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography
-                    variant="subtitle2"
-                    color="white"
-                    sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', mr: 1, fontFamily: 'Oswald, serif' }}
-                  >
-                    {formatDate(reply.date)}
-                  </Typography>
-                  
-                </Box>
-              </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 2,
-                  color: 'white',
-                  fontSize: isMobile ? '0.9rem' : '1.1rem', 
-                  fontFamily: 'Oswald, serif'
-                }}
-              >
-                {reply.content}
-              </Typography>
-            </ReplyPaper>
-          ))}
+          {renderReplies(comment.replies)}
         </CommentPaper>
       ))}
     </>

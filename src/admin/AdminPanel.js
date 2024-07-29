@@ -4,6 +4,8 @@ import NewsManagement from './news/NewsManagement';
 import MatchManagement from './matches/MatchManagement';
 import TournamentManagement from './tournaments/TournamentManagement';
 import TeamManagement from './team/TeamManagement';
+import CoverManagement from './CoverManagement';
+import CarouselManagement from './CarouselManagement';
 
 const AdminPanel = () => {
   const [value, setValue] = React.useState(0);
@@ -70,6 +72,8 @@ const AdminPanel = () => {
           <Tab sx={tabStyle} label="Матчи" />
           <Tab sx={tabStyle} label="Турниры" />
           <Tab sx={tabStyle} label="Команды и игроки" />
+          <Tab sx={tabStyle} label="Обложки" />
+          <Tab sx={tabStyle} label="Карусель главная страница" />  
         </Tabs>
         <TabPanel value={value} index={0}>
           <NewsManagement />
@@ -82,6 +86,12 @@ const AdminPanel = () => {
         </TabPanel>
         <TabPanel value={value} index={3}>
           <TeamManagement />
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <CoverManagement />
+        </TabPanel>
+        <TabPanel value={value} index={5}>
+          <CarouselManagement /> 
         </TabPanel>
       </Box>
     </Container>

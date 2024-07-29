@@ -50,7 +50,7 @@ const ResponsiveTextField = styled(TextField)(({ theme }) => ({
 
 const MAX_COMMENT_LENGTH = 200;
 
-const CommentForm = ({ isMobile, onCommentSubmit, onCancel }) => {
+const CommentForm = ({ isMobile, onCommentSubmit, onCancel, username }) => {
   const [comment, setComment] = useState('');
 
   const handleCommentChange = (event) => {
@@ -62,13 +62,15 @@ const CommentForm = ({ isMobile, onCommentSubmit, onCancel }) => {
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
-      onCommentSubmit({ 
-        date: new Date().toISOString().split('T')[0], 
-        username: 'CurrentUser', 
+      const commentData = {
+        date: new Date().toISOString().split('T')[0],
+        username: username || 'Anonymous',
         content: comment,
-        fk_user_profile: 1,
-      });
+      };
+      onCommentSubmit(commentData);
       setComment('');
+      window.location.reload();
+
     }
   };
 

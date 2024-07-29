@@ -79,6 +79,22 @@ const UpdateNews = () => {
   };
 
   const handleSubmit = async () => {
+    if (!title) {
+      alert('Пожалуйста, введите заголовок.');
+      return;
+    }
+    if (!content) {
+      alert('Пожалуйста, введите контент.');
+      return;
+    }
+    if (!discipline) {
+      alert('Пожалуйста, выберите дисциплину.');
+      return;
+    }
+    if (!imgUpl) {
+      alert('Пожалуйста, загрузите изображение.');
+      return;
+    }
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);

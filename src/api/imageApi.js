@@ -11,4 +11,16 @@ export const getTopImage = async (page, selectedTab) => {
   }
 };
 
-
+export const uploadImage = async (formData) => {
+  try {
+    const response = await api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading image', error);
+    throw error;
+  }
+};

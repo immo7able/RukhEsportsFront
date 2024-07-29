@@ -61,15 +61,16 @@ const NewsDetail = ({ isAuthenticated }) => {
     const fetchNewsItemAndComments = async () => {
       setLoading(true);
       setError(null);
-
+  
       try {
         const newsResponse = await getNewsItem(discipline, id);
         setNewsItem(newsResponse.data);
         setLikeCount(newsResponse.data.likeCount);
-
+  
         try {
           const commentsResponse = await getComments(id);
-          setComments(commentsResponse.data);
+          const formattedComments = formatComments(commentsResponse.data);
+          setComments(formattedComments);
         } catch (error) {
           setComments([]);
           setCommentsError('Ошибка при загрузке комментариев.');
@@ -77,12 +78,30 @@ const NewsDetail = ({ isAuthenticated }) => {
       } catch (error) {
         setError('Новость не найдена.');
       }
-
+  
       setLoading(false);
     };
-
+  
     fetchNewsItemAndComments();
   }, [discipline, id]);
+  
+  const formatComments = (comments) => {
+    const commentMap = {};
+    comments.forEach((comment) => {
+      comment.replies = [];
+      commentMap[comment.id] = comment;
+    });
+    const formattedComments = [];
+    comments.forEach((comment) => {
+      if (comment.parent_comment_id) {
+        commentMap[comment.parent_comment_id].replies.push(comment);
+      } else {
+        formattedComments.push(comment);
+      }
+    });
+    return formattedComments;
+  };
+  
 
   const handleLikeClick = () => {
     setLike((prev) => !prev);
@@ -183,13 +202,14 @@ const NewsDetail = ({ isAuthenticated }) => {
               {commentsError ? (
                   <Typography variant="h6" color="error">{commentsError}</Typography>
               ) : (
-                  <CommentList comments={comments} isMobile={isMobile} />
+                  <CommentList comments={comments} isMobile={isMobile} newsId={id} /> // Передаем newsId
               )}
               {showCommentField ? (
                   <CommentForm
                       isMobile={isMobile}
                       onCommentSubmit={handleCommentSubmit}
                       onCancel={() => setShowCommentField(false)}
+                      username="YourUsername"
                   />
               ) : (
                   <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>

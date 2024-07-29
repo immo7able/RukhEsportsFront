@@ -66,6 +66,16 @@ const CreateMatch = () => {
   };
 
   const handleSubmit = async () => {
+    if (!title) {
+      alert('Пожалуйста, введите заголовок.');
+      return;
+    }
+    if (!status) {
+      alert('Пожалуйста, введите статус матча.');
+      return;
+    }
+
+   
     const formData = new FormData();
     formData.append('title', title);
     formData.append('date', date);
