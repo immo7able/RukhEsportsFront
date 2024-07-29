@@ -51,10 +51,26 @@ const TournamentDetail = ({ isAuthenticated }) => {
 
       try {
         const tournamentData = await getTournament(type, id);
-        setTournament(tournamentData.data);
-
         const matchesData = await getMatches(id);
+
+        const updatedTournament = { ...tournamentData.data };
+        const existingTeamIds = new Set(updatedTournament.teams.map(team => team.id));
+
+        matchesData.data.forEach(match => {
+          if (!existingTeamIds.has(match.team1.id)) {
+            existingTeamIds.add(match.team1.id);
+            updatedTournament.teams.push(match.team1);
+          }
+          if (!existingTeamIds.has(match.team2.id)) {
+            existingTeamIds.add(match.team2.id);
+            updatedTournament.teams.push(match.team2);
+          }
+        });
+        setTournament(updatedTournament);
+        console.log(updatedTournament);
         setMatches(matchesData.data);
+        console.log(matchesData.data);
+
       } catch (error) {
         setError(error.message || 'Ошибка при загрузке данных.');
       }

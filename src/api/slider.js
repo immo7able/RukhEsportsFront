@@ -1,5 +1,5 @@
 import api from './api';
 
 export const getSliderImage = () => {
-    return api.get('/slider-image');
+    return api.get('/images/slider-image');
   };

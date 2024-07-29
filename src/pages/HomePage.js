@@ -71,7 +71,7 @@ const HomePage = () => {
     const fetchSliderImage = async () => {
       try {
         const response = await getSliderImage();
-        setSliderImage(response.data);
+        setSliderImage(response.data.img);
       } catch (error) {
         console.error('Ошибка при загрузке изображения слайдера:', error);
       }

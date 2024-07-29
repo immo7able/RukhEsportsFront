@@ -118,7 +118,7 @@ const TournamentContent = ({ tournament, isMobile }) => {
         >
           <Box
             component="img"
-            src={team.logo}
+            src={team.img}
             alt={team.name}
             sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />

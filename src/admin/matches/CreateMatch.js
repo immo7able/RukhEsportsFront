@@ -33,7 +33,7 @@ const CreateMatch = () => {
 
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -42,7 +42,7 @@ const CreateMatch = () => {
 
     fetchTournaments();
     fetchTeams();
-  }, []);
+  }, [discipline]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

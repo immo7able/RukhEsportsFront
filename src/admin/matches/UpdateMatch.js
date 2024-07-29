@@ -37,7 +37,7 @@ const UpdateMatch = () => {
 
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -56,7 +56,7 @@ const UpdateMatch = () => {
     fetchTournaments();
     fetchTeams();
     fetchMatches();
-  }, []);
+  }, [discipline]);
 
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const UpdateMatch = () => {
         setResult(match.result);
         setStatus(match.status);
         setYoutubeUrl(match.youtubeUrl);
-        setDiscipline(match.discipline);
+        setDiscipline(match.discipline.toUpperCase());
         setImg(match.img);
         setTournamentId(match.tournament.id);
         setTeam1Id(match.team1.id);
