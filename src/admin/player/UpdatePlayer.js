@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, IconButton, Snackbar, Alert } from '@mui/material';
-import { getTeams, getPlayer } from '../../api/team';
+import {getPlayer, getAllTeams} from '../../api/team';
 import api from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -23,7 +23,7 @@ const UpdatePlayer = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getAllTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
