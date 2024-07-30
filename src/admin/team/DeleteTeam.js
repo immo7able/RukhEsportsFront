@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import api from '../../api/api'; 
-import { getTeams } from '../../api/team';
+import {getAllTeams} from '../../api/team';
 
 const DeleteTeam = () => {
   const [id, setId] = useState('');
   const [teams, setTeams] = useState([]);
-  const [discipline] = useState('');
-
   const [selectedTeam, setSelectedTeam] = useState('');
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams(discipline);
+        const response = await getAllTeams();
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);

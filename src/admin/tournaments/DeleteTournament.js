@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import api from '../../api/api'; 
-import { getTournament } from '../../api/tournaments'; 
+import { getTournaments} from '../../api/tournaments';
 
 const DeleteTournament = () => {
   const [id, setId] = useState('');
@@ -11,7 +11,7 @@ const DeleteTournament = () => {
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
-        const response = await getTournament();
+        const response = await getTournaments();
         setTournaments(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке турниров:', error);

@@ -8,7 +8,7 @@ const CreateTeam = () => {
   const [imgUpl, setImgUpl] = useState(null);
   const [img, setImg] = useState('');
   const [discipline, setDiscipline] = useState('');
-  const [rukhTeam, setRukhTeam] = useState('Нет');
+  const [rukhTeam, setRukhTeam] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
 
@@ -38,7 +38,7 @@ const CreateTeam = () => {
     formData.append('name', name);
     formData.append('content', content);
     formData.append('discipline', discipline);
-    formData.append('rukhTeam', rukhTeam);
+    formData.append('rukh', rukhTeam);
     formData.append('image', imgUpl);
     try {
       await api.post('/admin/createTeam', formData, {
@@ -113,8 +113,8 @@ const CreateTeam = () => {
             },
           }}
         >
-          <MenuItem value="norukh" sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
-          <MenuItem value="rukh" sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
+          <MenuItem value="false" sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
+          <MenuItem value="true" sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
         </Select>
       </FormControl>
       

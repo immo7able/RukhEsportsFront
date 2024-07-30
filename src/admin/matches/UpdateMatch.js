@@ -14,6 +14,7 @@ const UpdateMatch = () => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [discipline, setDiscipline] = useState('');
   const [img, setImg] = useState('');
+  const [imgUpl, setImgUpl] = useState(null);
   const [tournamentId, setTournamentId] = useState('');
   const [team1Id, setTeam1Id] = useState('');
   const [team2Id, setTeam2Id] = useState('');
@@ -75,7 +76,7 @@ const UpdateMatch = () => {
         setResult(match.result);
         setStatus(match.status);
         setYoutubeUrl(match.youtubeUrl);
-        setDiscipline(match.discipline.toUpperCase());
+        setDiscipline(match.tournament.discipline.toUpperCase());
         setImg(match.img);
         setTournamentId(match.tournament.id);
         setTeam1Id(match.team1.id);
@@ -86,6 +87,7 @@ const UpdateMatch = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -104,7 +106,7 @@ const UpdateMatch = () => {
     const selectedTournament = tournaments.find(tournament => tournament.id === selectedTournamentId);
     if (selectedTournament) {
       setTournamentId(selectedTournamentId);
-      setDiscipline(selectedTournament.discipline);
+      setDiscipline(selectedTournament.discipline.toUpperCase());
     }
   };
 
@@ -114,12 +116,23 @@ const UpdateMatch = () => {
   };
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('date', date);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
+    formData.append('result', result);
+    formData.append('status', status);
+    formData.append('youtubeUrl', youtubeUrl);
+    formData.append('tournamentId', tournamentId);
+    formData.append('team1Id', team1Id);
+    formData.append('team2Id', team2Id);
     try {
-      await api.put(`/matches/${id}`, { title, date, result, status, youtubeUrl, discipline, img, fk_tournament: tournamentId });
-
-      await api.delete(`/match_team/${id}`);
-      await api.post('/match_team', { match_id: id, team_id: team1Id });
-      await api.post('/match_team', { match_id: id, team_id: team2Id });
+      await api.put(`/admin/updateMatch/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       alert('Матч обновлен успешно!');
     } catch (error) {

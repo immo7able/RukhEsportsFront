@@ -58,7 +58,7 @@ const UpdateTournament = () => {
                   setImgUpl(file);
               }
           });
-        setDiscipline(tournament.discipline);
+        setDiscipline(tournament.discipline.toUpperCase());
         setDate(tournament.date);
         setPrizepool(tournament.prizepool);
       }
