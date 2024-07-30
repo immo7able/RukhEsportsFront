@@ -12,7 +12,7 @@ const CreateNews = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [tournaments, setTournaments] = useState([]);
-  const [selectedTournament, setSelectedTournament] = useState('');
+  const [selectedTournament, setSelectedTournament] = useState(null);
 
   useEffect(() => {
     const fetchTournaments = async () => {
@@ -69,8 +69,8 @@ const CreateNews = () => {
     formData.append('content', content);
     formData.append('discipline', discipline);
     formData.append('image', imgUpl);
-    formData.append('tournament', selectedTournament);
-
+    if(selectedTournament!=null)
+      formData.append('tournament', selectedTournament);
     try {
       await api.post('/admin/createNews', formData, {
         headers: {
