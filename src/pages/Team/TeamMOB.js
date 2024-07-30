@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import TeamInfo from './TeamInfo';
-import { getTeam} from '../../api/team';
+import { getTeam } from '../../api/team';
 
 const TEAMMOB = () => {
   const [team, setTeam] = useState(null);
@@ -10,11 +9,10 @@ const TEAMMOB = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
     const fetchTeamData = async () => {
       try {
-        const teamData = await getTeam('mob');
-        setTeam(teamData.data);
+        const response = await getTeam('mob');
+        setTeam(response.data);
       } catch (error) {
         setError('Ошибка при загрузке данных команды или игроков');
       }

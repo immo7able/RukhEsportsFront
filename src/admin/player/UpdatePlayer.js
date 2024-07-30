@@ -19,11 +19,13 @@ const UpdatePlayer = () => {
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
+  const [discipline] = useState('');
+
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
@@ -224,42 +226,34 @@ const UpdatePlayer = () => {
 
       {socialMediaLinks.map((link, index) => (
         <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <FormControl sx={{ mr: 2, width: '30%' }}>
-          <InputLabel id={`platform-label-${index}`}         sx={{ fontSize: '1.5rem' }}
-          >Платформа</InputLabel>
-          <Select
-            labelId={`platform-label-${index}`}
-            value={link.platform}
-            onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
-            label="Платформа"
-            sx={{ fontSize: '1.5rem' }}
-
-          >
-            <MenuItem value="YouTube"           sx={{ fontSize: '1.5rem' }}
-            >YouTube</MenuItem>
-            <MenuItem value="Instagram"           sx={{ fontSize: '1.5rem' }}
-            >Instagram</MenuItem>
-            <MenuItem value="Twitch"           sx={{ fontSize: '1.5rem' }}
-            >Twitch</MenuItem>
-            <MenuItem value="Facebook"           sx={{ fontSize: '1.5rem' }}
-            >Facebook</MenuItem>
-            <MenuItem value="Other"           sx={{ fontSize: '1.5rem' }}
-            >Другое</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          label="URL"
-          value={link.url}
-          onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
-          sx={{ flex: 1 }}
-          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-        InputProps={{ style: { fontSize: '1.5rem' } }}
-        />
-        <IconButton onClick={() => handleRemoveSocialMedia(index)} sx={{ ml: 2 }}>
-          <RemoveIcon />
-        </IconButton>
-      </Box>
-      
+          <FormControl sx={{ mr: 2, width: '30%' }}>
+            <InputLabel id={`platform-label-${index}`} sx={{ fontSize: '1.5rem' }}>Платформа</InputLabel>
+            <Select
+              labelId={`platform-label-${index}`}
+              value={link.platform}
+              onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
+              label="Платформа"
+              sx={{ fontSize: '1.5rem' }}
+            >
+              <MenuItem value="YouTube" sx={{ fontSize: '1.5rem' }}>YouTube</MenuItem>
+              <MenuItem value="Instagram" sx={{ fontSize: '1.5rem' }}>Instagram</MenuItem>
+              <MenuItem value="Twitch" sx={{ fontSize: '1.5rem' }}>Twitch</MenuItem>
+              <MenuItem value="Facebook" sx={{ fontSize: '1.5rem' }}>Facebook</MenuItem>
+              <MenuItem value="Other" sx={{ fontSize: '1.5rem' }}>Другое</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="URL"
+            value={link.url}
+            onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
+            sx={{ flex: 1 }}
+            InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+            InputProps={{ style: { fontSize: '1.5rem' } }}
+          />
+          <IconButton onClick={() => handleRemoveSocialMedia(index)} sx={{ ml: 2 }}>
+            <RemoveIcon />
+          </IconButton>
+        </Box>
       ))}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
 
@@ -278,7 +272,7 @@ onChange={handleImageChange}
 </Button>
 
   <Button variant="contained" sx={{width: '48%' }}
- onClick={handleSubmit}>Создать</Button>
+ onClick={handleSubmit}>Обновить</Button>
   </Box>
   {img && (
     <Box sx={{ textAlign: 'center', mt: 2 }}>

@@ -3,7 +3,8 @@ import { Box, Typography, Card, CardContent, CardMedia, useMediaQuery } from '@m
 import { useTheme } from '@mui/material/styles';
 import Slider from 'react-slick';
 import '../../styles/TeamContent.css';
-import { FaFacebook, FaYoutube, FaInstagram } from 'react-icons/fa'; 
+import { FaFacebook, FaYoutube, FaInstagram, FaTwitch } from 'react-icons/fa'; 
+import { CgWebsite } from 'react-icons/cg';
 
 const TeamInfo = ({ team }) => {
   const theme = useTheme();
@@ -50,8 +51,10 @@ const TeamInfo = ({ team }) => {
       return <FaYoutube />;
     } else if (url.includes('instagram.com')) {
       return <FaInstagram />;
+    } else if (url.includes('twitch.tv')) {
+      return <FaTwitch />;
     } else {
-      return null;
+      return <CgWebsite />;
     }
   };
 

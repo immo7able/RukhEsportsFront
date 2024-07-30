@@ -19,10 +19,18 @@ const TournamentsPage = ({ isAuthenticated }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imageUrl = await getTopImage('tournaments', selectedTab);
-      setTopImage(imageUrl.data.img);
+      try {
+        const imageUrl = await getTopImage('tournaments', selectedTab); 
+        if (imageUrl && imageUrl.data && imageUrl.data.img) {
+          setTopImage(imageUrl.data.img);
+        } else {
+          console.error('Image data is not available:', imageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
     };
-
+  
     fetchImage();
   }, [selectedTab]);
 

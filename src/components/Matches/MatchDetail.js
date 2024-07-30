@@ -19,6 +19,13 @@ const MatchWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
+
+
 const MatchDetail = ({ isAuthenticated }) => {
   const { type, id } = useParams();
   const location = useLocation();
@@ -99,9 +106,11 @@ const MatchDetail = ({ isAuthenticated }) => {
               <ArrowCircleLeftOutlinedIcon fontSize="large" />
             </IconButton>
             <Box sx={{ flex: 1, fontFamily: 'Oswald, serif',textAlign: 'center',  fontSize: isMobile ? '1.2rem' : '2rem' }}>
-              {match.date}
+            {formatDate(match.date)}
             </Box>
+            {match.status === 'Completed' && (
             <Box sx={{ display: 'flex', alignItems: 'center', padding: 2}}>
+            
               <Box
                 component="img"
                 src="/images/rank.svg"
@@ -115,7 +124,9 @@ const MatchDetail = ({ isAuthenticated }) => {
               <Typography variant="h6" sx={{ color: 'white', fontSize: isMobile ? 15 : 25 }}>
                 {match.result}
               </Typography>
+              
             </Box>
+             )}
           </Typography>
           
           {youtubeVideoId && (

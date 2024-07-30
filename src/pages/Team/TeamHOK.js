@@ -10,12 +10,10 @@ const TEAMHOK = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
     const fetchTeamData = async () => {
       try {
-        const teamData = await getTeam('hok');
-        setTeam(teamData.data);
-
+        const response = await getTeam('hok');
+        setTeam(response.data);
       } catch (error) {
         setError('Ошибка при загрузке данных команды или игроков');
       }

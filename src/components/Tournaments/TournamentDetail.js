@@ -22,6 +22,12 @@ const TournamentWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
+
 const TournamentDetail = ({ isAuthenticated }) => {
   const { type, id } = useParams();
   const location = useLocation();
@@ -127,7 +133,7 @@ const TournamentDetail = ({ isAuthenticated }) => {
               <ArrowCircleLeftOutlinedIcon fontSize="large" />
             </IconButton>
             <Box sx={{ flex: 1, textAlign: 'center', marginRight: '30px', fontFamily: 'Oswald, serif', fontSize: isMobile ? '1.2rem' : '2rem' }}>
-              {tournament.date}
+            {formatDate(tournament.date)}
             </Box>
           </Typography>
 

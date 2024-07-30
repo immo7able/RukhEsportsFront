@@ -202,7 +202,7 @@ const NewsDetail = ({ isAuthenticated }) => {
               {commentsError ? (
                   <Typography variant="h6" color="error">{commentsError}</Typography>
               ) : (
-                  <CommentList comments={comments} isMobile={isMobile} newsId={id} /> // Передаем newsId
+                  <CommentList comments={comments} isMobile={isMobile} newsId={id} />
               )}
               {showCommentField ? (
                   <CommentForm

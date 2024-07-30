@@ -2,6 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
+
 const MatchCard = ({ match, isMobile, from }) => (
   <Link 
     to={`/matches/${match.discipline}/${match.id}`}
@@ -52,7 +58,7 @@ const MatchCard = ({ match, isMobile, from }) => (
             <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.team1.name}</Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '33%', marginBottom: 4 }}>
-            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.date}</Typography>
+            <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{formatDate(match.date)}</Typography>
             <Typography sx={{ fontFamily: 'Oswald, serif',fontSize: isMobile ? '1.1rem' : '2rem' }}>{match.time}</Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '33%', marginBottom: 4 }}>

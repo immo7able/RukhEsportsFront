@@ -10,11 +10,10 @@ const TEAMPUBG = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-
     const fetchTeamData = async () => {
       try {
-        const teamData = await getTeam('pubg');
-        setTeam(teamData.data);
+        const response = await getTeam('pubg');
+        setTeam(response.data);
       } catch (error) {
         setError('Ошибка при загрузке данных команды или игроков');
       }

@@ -175,7 +175,7 @@ const UpdateMatch = () => {
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
         <TextField
-          type="datetime-local"
+          type="date"
           fullWidth
           value={date}
           onChange={(e) => setDate(e.target.value)}

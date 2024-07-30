@@ -8,11 +8,21 @@ const CarouselManagement = () => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imgUrl = await getSliderImage();
-      setCurrentImage(imgUrl.data.img);
+      try {
+        const imgUrl = await getSliderImage();
+        if (imgUrl && imgUrl.data && imgUrl.data.img) {
+          setCurrentImage(imgUrl.data.img);
+        } else {
+          console.error('Image data is not available:', imgUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
     };
+  
     fetchImage();
   }, []);
+  
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);

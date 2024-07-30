@@ -20,10 +20,18 @@ const MatchesPage = ({ isAuthenticated }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imageUrl = await getTopImage('matches', selectedTab);
-      setTopImage(imageUrl.data.img);
+      try {
+        const imageUrl = await getTopImage('matches', selectedTab); 
+        if (imageUrl && imageUrl.data && imageUrl.data.img) {
+          setTopImage(imageUrl.data.img);
+        } else {
+          console.error('Image data is not available:', imageUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
     };
-
+  
     fetchImage();
   }, [selectedTab]);
 

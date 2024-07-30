@@ -10,12 +10,21 @@ const CoverManagement = () => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imgUrl = await getTopImage(page, selectedTab);
-      setCurrentImage(imgUrl.data.img);
+      try {
+        const imgUrl = await getTopImage(page, selectedTab);
+        if (imgUrl && imgUrl.data && imgUrl.data.img) {
+          setCurrentImage(imgUrl.data.img);
+        } else {
+          console.error('Image data is not available:', imgUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
     };
+  
     fetchImage();
   }, [page, selectedTab]);
-
+  
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };

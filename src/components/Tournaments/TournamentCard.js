@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import '../../styles/TournamentCard.css';
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', options).split('/').join('-');
+};
 
 const truncateText = (text, maxLength) => {
   if (text.length > maxLength) {
@@ -85,8 +90,8 @@ const TournamentCard = ({ tournament, isMobile }) => {
 >
 <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
-  <Typography sx={{ fontSize: isMobile ? 20 : 25, color: 'white', fontFamily: 'Oswald, serif', }}>
-    {tournament.date}
+<Typography sx={{ fontSize: isMobile ? 20 : 25, color: 'white', fontFamily: 'Oswald, serif' }}>
+    {formatDate(tournament.date)}
   </Typography>
   </Box>
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
