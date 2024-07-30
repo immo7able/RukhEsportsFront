@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Tabs, Tab, Box, Typography} from '@mui/material';
+import { Container, Tabs, Tab, Box, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import NewsManagement from './news/NewsManagement';
 import MatchManagement from './matches/MatchManagement';
 import TournamentManagement from './tournaments/TournamentManagement';
@@ -9,23 +10,25 @@ import CarouselManagement from './CarouselManagement';
 
 const AdminPanel = () => {
   const [value, setValue] = React.useState(0);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const tabStyle = {
-    bgcolor: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
     fontSize: 20,
-    color: 'rgba(0, 0, 0,)',
-    borderRadius: 2,
+    color: '#FFFFFF',
     p: 2,
     boxShadow: 3,
+    borderRadius: 2,
+    m: isSmallScreen ? 1 : 2,
+    bgcolor: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
     '&:hover': {
       bgcolor: 'rgba(255, 255, 255, 0.4)',
     },
-    m: 2,
   };
 
   return (
@@ -34,7 +37,7 @@ const AdminPanel = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        minHeight: '100vh',
         backgroundImage: 'url("/path/to/your/background/image.jpg")',
         backgroundSize: 'cover',
         padding: 4,
@@ -49,13 +52,19 @@ const AdminPanel = () => {
           borderRadius: 3,
           boxShadow: 3,
           p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
         <Tabs
           value={value}
           onChange={handleChange}
-          centered
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
+            maxWidth: '100%',
             '& .MuiTab-root': {
               fontWeight: 'bold',
               color: '#FFFFFF',
@@ -73,26 +82,28 @@ const AdminPanel = () => {
           <Tab sx={tabStyle} label="Турниры" />
           <Tab sx={tabStyle} label="Команды и игроки" />
           <Tab sx={tabStyle} label="Обложки" />
-          <Tab sx={tabStyle} label="Карусель главная страница" />  
+          <Tab sx={tabStyle} label="Карусель главная страница" />
         </Tabs>
-        <TabPanel value={value} index={0}>
-          <NewsManagement />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <MatchManagement />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <TournamentManagement />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
-          <TeamManagement />
-        </TabPanel>
-        <TabPanel value={value} index={4}>
-          <CoverManagement />
-        </TabPanel>
-        <TabPanel value={value} index={5}>
-          <CarouselManagement /> 
-        </TabPanel>
+        <Box sx={{ width: '100%' }}>
+          <TabPanel value={value} index={0}>
+            <NewsManagement />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <MatchManagement />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <TournamentManagement />
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <TeamManagement />
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            <CoverManagement />
+          </TabPanel>
+          <TabPanel value={value} index={5}>
+            <CarouselManagement />
+          </TabPanel>
+        </Box>
       </Box>
     </Container>
   );

@@ -64,7 +64,6 @@ const UpdateNews = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
       };
       reader.onerror = () => {
         setOpenError(true);
@@ -73,7 +72,7 @@ const UpdateNews = () => {
     }
   };
   
-  const handleClose = () => {
+  const handleSnackbarClose = () => {
     setOpenSuccess(false);
     setOpenError(false);
   };
@@ -106,9 +105,9 @@ const UpdateNews = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('Новость обновлена успешно!');
+      setOpenSuccess(true);
     } catch (error) {
-      alert('Ошибка при обновлении новости!');
+      setOpenError(true);
     }
   };
 
@@ -213,16 +212,16 @@ onChange={handleImageChange}
 <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
 </Box>
 )}
-<Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-      Изображение успешно загружено!
-    </Alert>
-  </Snackbar>
-  <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-      Ошибка при загрузке изображения!
-    </Alert>
-  </Snackbar>
+<Snackbar open={openSuccess} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Новость обновлена успешно! Нажмите на пустое пространство чтобы закрыть окно
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openError} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+          Ошибка при создании новости!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

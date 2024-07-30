@@ -18,7 +18,7 @@ const UpdateTeam = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);

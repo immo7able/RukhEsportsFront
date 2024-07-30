@@ -13,6 +13,8 @@ const CreatePlayer = () => {
   const [imgUpl, setImgUpl] = useState(null);
   const [teamId, setTeamId] = useState('');
   const [teams, setTeams] = useState([]);
+  const [discipline, setDiscipline] = useState('');
+
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openError, setOpenError] = useState(false);
@@ -20,7 +22,7 @@ const CreatePlayer = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);

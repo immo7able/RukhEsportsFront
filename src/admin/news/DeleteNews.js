@@ -32,7 +32,7 @@ const DeleteNews = () => {
   const handleSubmit = async () => {
     try {
       await api.delete(`/admin/deleteNews/${id}`);
-      alert('Новость удалена успешно!');
+      alert('Новость удалена успешно! Нажмите на пустое пространство чтобы закрыть окно');
     } catch (error) {
       alert('Ошибка при удалении новости!');
     }

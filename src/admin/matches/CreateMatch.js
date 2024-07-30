@@ -31,18 +31,32 @@ const CreateMatch = () => {
       }
     };
 
-    const fetchTeams = async () => {
-      try {
-        const response = await getTeams(discipline);
-        setTeams(response.data);
-      } catch (error) {
-        console.error('Ошибка при загрузке команд:', error);
-      }
-    };
-
     fetchTournaments();
-    fetchTeams();
+  }, []);
+
+  useEffect(() => {
+    if (discipline) {
+      const fetchTeams = async () => {
+        try {
+          const response = await getTeams(discipline);
+          setTeams(response.data);
+        } catch (error) {
+          console.error('Ошибка при загрузке команд:', error);
+        }
+      };
+
+      fetchTeams();
+    }
   }, [discipline]);
+
+  const handleTournamentChange = (e) => {
+    const selectedTournamentId = e.target.value;
+    const selectedTournament = tournaments.find(tournament => tournament.id === selectedTournamentId);
+    if (selectedTournament) {
+      setTournamentId(selectedTournamentId);
+      setDiscipline(selectedTournament.discipline);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -75,7 +89,6 @@ const CreateMatch = () => {
       return;
     }
 
-   
     const formData = new FormData();
     formData.append('title', title);
     formData.append('date', date);
@@ -102,8 +115,8 @@ const CreateMatch = () => {
 
   return (
     <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto',  width: '80%', maxWidth: '900px' }}>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-    <TextField
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <TextField
           label="Название"
           fullWidth
           value={title}
@@ -121,89 +134,88 @@ const CreateMatch = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-  </Box>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
-  <FormControl fullWidth sx={{ width: '48%' }}>
-      <InputLabel id="status-label" sx={{ fontSize: '1.5rem' }}>Статус</InputLabel>
-      <Select
-        labelId="status-label"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        label="Статус"
-        sx={{ fontSize: '1.5rem' }}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              fontSize: '1.5rem',
-            },
-          },
-        }}
-      >
-        <MenuItem value="Upcoming"  sx={{ fontSize: '1.5rem' }}>Upcoming</MenuItem>
-        <MenuItem value="Ongoing"  sx={{ fontSize: '1.5rem' }}>Ongoing</MenuItem>
-        <MenuItem value="Completed"  sx={{ fontSize: '1.5rem' }}>Completed</MenuItem>
-      </Select>
-    </FormControl>
-    <FormControl fullWidth sx={{ width: '48%' }} >
-      <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
-      <Select
-        labelId="discipline-label"
-        value={discipline}
-        onChange={(e) => setDiscipline(e.target.value)}
-        label="Дисциплина"
-        sx={{ fontSize: '1.5rem' }}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              fontSize: '1.5rem',
-            },
-          },
-        }}
-      >
-        <MenuItem value="PUBG"  sx={{ fontSize: '1.5rem' }}>PUBG</MenuItem>
-        <MenuItem value="HOK"  sx={{ fontSize: '1.5rem' }}>HOK</MenuItem>
-        <MenuItem value="MOB"  sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
-      </Select>
-    </FormControl>
-  </Box>
-  
-  <TextField
-    label="YouTube URL"
-    fullWidth
-    value={youtubeUrl}
-    onChange={(e) => setYoutubeUrl(e.target.value)}
-    sx={{ mt: 2 }}
-    InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-          InputProps={{ style: { fontSize: '1.5rem' } }}
-  />
-  
-  
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, mt: 2 }}>
-    <FormControl sx={{ width: '48%' }}>
-      <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Турнир</InputLabel>
-      <Select
-        labelId="tournament-select-label"
-        value={tournamentId}
-        onChange={(e) => setTournamentId(e.target.value)}
-        label="Турнир"
-        sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <FormControl fullWidth sx={{ width: '48%' }}>
+          <InputLabel id="status-label" sx={{ fontSize: '1.5rem' }}>Статус</InputLabel>
+          <Select
+            labelId="status-label"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            label="Статус"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
               },
-            },
-          }}
-      >
-        {tournaments.map((tournament) => (
-          <MenuItem key={tournament.id} value={tournament.id}>
-            {tournament.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-    <TextField
+            }}
+          >
+            <MenuItem value="Upcoming" sx={{ fontSize: '1.5rem' }}>Upcoming</MenuItem>
+            <MenuItem value="Ongoing" sx={{ fontSize: '1.5rem' }}>Ongoing</MenuItem>
+            <MenuItem value="Completed" sx={{ fontSize: '1.5rem' }}>Completed</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ width: '48%' }}>
+          <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
+          <Select
+            labelId="discipline-label"
+            value={discipline}
+            onChange={(e) => setDiscipline(e.target.value)}
+            label="Дисциплина"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+            disabled
+          >
+            <MenuItem value="pubg" sx={{ fontSize: '1.5rem' }}>PUBG</MenuItem>
+            <MenuItem value="hok" sx={{ fontSize: '1.5rem' }}>HOK</MenuItem>
+            <MenuItem value="mob" sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      
+      <TextField
+        label="YouTube URL"
+        fullWidth
+        value={youtubeUrl}
+        onChange={(e) => setYoutubeUrl(e.target.value)}
+        sx={{ mt: 2 }}
+        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+        InputProps={{ style: { fontSize: '1.5rem' } }}
+      />
+      
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, mt: 2 }}>
+        <FormControl sx={{ width: '48%' }}>
+          <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Турнир</InputLabel>
+          <Select
+            labelId="tournament-select-label"
+            value={tournamentId}
+            onChange={handleTournamentChange}
+            label="Турнир"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            {tournaments.map((tournament) => (
+              <MenuItem key={tournament.id} value={tournament.id}>
+                {tournament.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
           label="Результат"
           fullWidth
           value={result}
@@ -212,59 +224,57 @@ const CreateMatch = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-
-   
-  </Box>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-  <FormControl sx={{ width: '48%'}}>
-      <InputLabel id="team1-select-label" sx={{ fontSize: '1.5rem' }}>Команда 1</InputLabel>
-      <Select
-        labelId="team1-select-label"
-        value={team1Id}
-        onChange={(e) => setTeam1Id(e.target.value)}
-        label="Команда 1"
-        sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
-              },
-            },
-          }}
-      >
-        {teams.map((team) => (
-          <MenuItem key={team.id} value={team.id}>
-            {team.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-    <FormControl sx={{ width: '48%' }}>
-    <InputLabel id="team2-select-label" sx={{ fontSize: '1.5rem' }}>Команда 2</InputLabel>
-    <Select
-      labelId="team2-select-label"
-      value={team2Id}
-      onChange={(e) => setTeam2Id(e.target.value)}
-      label="Команда 2"
-      sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
-              },
-            },
-          }}
-    >
-      {teams.map((team) => (
-        <MenuItem key={team.id} value={team.id}>
-          {team.name}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
-  </Box>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <FormControl sx={{ width: '48%' }}>
+          <InputLabel id="team1-select-label" sx={{ fontSize: '1.5rem' }}>Команда 1</InputLabel>
+          <Select
+            labelId="
+team1-select-label"
+value={team1Id}
+onChange={(e) => setTeam1Id(e.target.value)}
+label="Команда 1"
+sx={{ fontSize: '1.5rem' }}
+MenuProps={{
+PaperProps: {
+style: {
+fontSize: '1.5rem',
+},
+},
+}}
+>
+{teams.filter(team => team.id !== team2Id).map((team) => (
+<MenuItem key={team.id} value={team.id}>
+{team.name}
+</MenuItem>
+))}
+</Select>
+</FormControl>
+<FormControl sx={{ width: '48%' }}>
+<InputLabel id="team2-select-label" sx={{ fontSize: '1.5rem' }}>Команда 2</InputLabel>
+<Select
+labelId="team2-select-label"
+value={team2Id}
+onChange={(e) => setTeam2Id(e.target.value)}
+label="Команда 2"
+sx={{ fontSize: '1.5rem' }}
+MenuProps={{
+PaperProps: {
+style: {
+fontSize: '1.5rem',
+},
+},
+}}
+>
+{teams.filter(team => team.id !== team1Id).map((team) => (
+<MenuItem key={team.id} value={team.id}>
+{team.name}
+</MenuItem>
+))}
+</Select>
+</FormControl>
+</Box>
+<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
 <Button
 variant="contained"
 component="label"
@@ -273,33 +283,30 @@ sx={{width: '48%' }}
 >
 Загрузить изображение
 <input
-type="file"
-hidden
-onChange={handleImageChange}
-/>
+         type="file"
+         hidden
+         onChange={handleImageChange}
+       />
 </Button>
-
-  <Button variant="contained" sx={{width: '48%' }}
- onClick={handleSubmit}>Создать</Button>
-  </Box>
-  {img && (
-    <Box sx={{ textAlign: 'center', mt: 2 }}>
-      <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
-    </Box>
-  )}
-  <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-      Изображение успешно загружено!
-    </Alert>
-  </Snackbar>
-  <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-      Ошибка при загрузке изображения!
-    </Alert>
-  </Snackbar>
+<Button variant="contained" sx={{width: '48%' }} onClick={handleSubmit}>Создать</Button>
 </Box>
-
-  );
+{img && (
+<Box sx={{ textAlign: 'center', mt: 2 }}>
+<img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
+</Box>
+)}
+<Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
+<Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+Изображение успешно загружено!
+</Alert>
+</Snackbar>
+<Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
+<Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+Ошибка при загрузке изображения!
+</Alert>
+</Snackbar>
+</Box>
+);
 };
 
 export default CreateMatch;

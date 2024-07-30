@@ -34,7 +34,6 @@ const CreateNews = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
       };
       reader.onerror = () => {
         setOpenError(true);
@@ -171,9 +170,9 @@ const CreateNews = () => {
           <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
         </Box>
       )}
-      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar open={openSuccess} autoHideDuration={10000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Новость создана успешно!
+          Новость создана успешно! Нажмите на пустое пространство чтобы закрыть окно
         </Alert>
       </Snackbar>
       <Snackbar open={openError} autoHideDuration={6000} onClose={handleSnackbarClose}>
