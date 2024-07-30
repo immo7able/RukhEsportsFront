@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Avatar, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CommentForm from './CommentForm';
-import { addComment } from '../../api/comments';
+import { addComment, deleteComment } from '../../api/comments';
 
 const CommentPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'rgba(23, 54, 50, 0.85)',
@@ -30,6 +30,13 @@ const ReplyButton = styled(Button)(({ theme }) => ({
   color: 'rgb(0,142,130, 0.8)',
   ':hover': {
     backgroundColor: '#008e82',
+    color: 'white',
+  },
+}));
+const DeleteButton = styled(Button)(({ theme }) => ({
+  color: 'red',
+  ':hover': {
+    backgroundColor: '#ff4d4d',
     color: 'white',
   },
 }));
@@ -87,6 +94,15 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
   const handleCancel = () => {
     setReplyingTo(null);
   };
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      const updatedComments = localComments.filter(comment => comment.id !== commentId);
+      setLocalComments(updatedComments);
+    } catch (error) {
+      console.error('Ошибка при удалении комментария:', error);
+    }
+  };
 
   const renderReplies = (replies) => {
     return replies.map((reply, replyIndex) => (
@@ -138,6 +154,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
     ));
   };
 
+
   return (
     <>
       {localComments.map((comment, index) => (
@@ -164,15 +181,21 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
                 {comment.nickname}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography
-                variant="subtitle2"
-                color="white"
-                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mr: 1, fontFamily: 'Oswald, serif' }}
-              >
-                {formatDate(comment.date)}
-              </Typography>
-            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+  <Typography
+    variant="subtitle2"
+    color="white"
+    sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mb: 1, fontFamily: 'Oswald, serif' }}
+  >
+    {formatDate(comment.date)}
+  </Typography>
+  {comment.nickname === comment.nickname && (
+    <DeleteButton onClick={() => handleDelete(comment.id)}>
+      Удалить
+    </DeleteButton>
+  )}
+</Box>
+
           </Box>
           <Typography
             variant="body1"

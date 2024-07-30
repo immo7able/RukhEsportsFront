@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import MatchesList from '../../components/Matches/MatchList';
 import MatchesTabs from '../../components/Matches/MatchTabs';
 import { getMatchesByDiscipline} from '../../api/matches';
@@ -33,15 +33,22 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <Box className="loader">
-        <Box className="half-ring"></Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Box className="loader">
+          <Box className="half-ring"></Box>
+        </Box>
       </Box>
     );
   }
-
+  
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Typography variant="h6" color="error">{error}</Typography>
+      </Box>
+    );
   }
+  
 
   return (
     <div>

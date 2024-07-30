@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import TournamentList from '../../components/Tournaments/TournamentList';
 import TournamentsTabs from '../../components/Tournaments/TournamentsTabs';
 import { getTournamentsByDiscipline} from '../../api/tournaments';
@@ -31,15 +31,22 @@ const TPUBG = () => {
 
   if (loading) {
     return (
-      <Box className="loader">
-        <Box className="half-ring"></Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Box className="loader">
+          <Box className="half-ring"></Box>
+        </Box>
       </Box>
     );
   }
-
+  
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Typography variant="h6" color="error">{error}</Typography>
+      </Box>
+    );
   }
+  
 
   return (
     <div>

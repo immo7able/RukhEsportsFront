@@ -97,7 +97,7 @@ const TournamentCard = ({ tournament, isMobile }) => {
   <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <EmojiEventsIcon sx={{ color: 'white', mr: 1 }} />
     <Typography sx={{ fontSize: isMobile ? 20 : 25, color: 'white', fontFamily: 'Oswald, serif', }}>
-      {tournament.prizepool}
+      {tournament.prizepool}₸
     </Typography>
   </Box>
 </Box>

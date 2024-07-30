@@ -10,14 +10,15 @@ const UpdateTournament = () => {
   const [status, setStatus] = useState('');
   const [result, setResult] = useState('');
   const [img, setImg] = useState('');
-    const [imgUpl, setImgUpl] = useState(null);
+  const [imgUpl, setImgUpl] = useState(null);
   const [discipline, setDiscipline] = useState('');
   const [date, setDate] = useState('');
   const [prizepool, setPrizepool] = useState('');
   const [tournaments, setTournaments] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState('');
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openError, setOpenError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchTournaments = async () => {
@@ -33,17 +34,17 @@ const UpdateTournament = () => {
   }, []);
 
   useEffect(() => {
-      const fetchImage = async (imageUrl) => {
-          try {
-              const response = await fetch(imageUrl);
-              const blob = await response.blob();
-              const file = new File([blob], 'image.jpg', { type: blob.type });
-              return file;
-          } catch (error) {
-              console.error('Ошибка при загрузке изображения:', error);
-              return null;
-          }
-      };
+    const fetchImage = async (imageUrl) => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'image.jpg', { type: blob.type });
+        return file;
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        return null;
+      }
+    };
     if (selectedTournament) {
       const tournament = tournaments.find((item) => item.id === selectedTournament);
       if (tournament) {
@@ -53,11 +54,11 @@ const UpdateTournament = () => {
         setStatus(tournament.status);
         setResult(tournament.result);
         setImg(tournament.img);
-          fetchImage(tournament.img).then((file) => {
-              if (file) {
-                  setImgUpl(file);
-              }
-          });
+        fetchImage(tournament.img).then((file) => {
+          if (file) {
+            setImgUpl(file);
+          }
+        });
         setDiscipline(tournament.discipline.toUpperCase());
         setDate(tournament.date);
         setPrizepool(tournament.prizepool);
@@ -67,88 +68,95 @@ const UpdateTournament = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-      setImgUpl(file);
+    setImgUpl(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
+        setSnackbarMessage('Изображение успешно загружено!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
       };
       reader.onerror = () => {
-        setOpenError(true);
+        setSnackbarMessage('Ошибка при загрузке изображения!');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
   };
   
-  const handleClose = () => {
-    setOpenSuccess(false);
-    setOpenError(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('content', content);
-      formData.append('discipline', discipline);
-      formData.append('image', imgUpl);
-      formData.append('status', status);
-      formData.append('result', result);
-      formData.append('date', date);
-      formData.append('prizepool', prizepool);
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('content', content);
+    formData.append('discipline', discipline);
+    formData.append('image', imgUpl);
+    formData.append('status', status);
+    formData.append('result', result);
+    formData.append('date', date);
+    formData.append('prizepool', prizepool);
     try {
       await api.put(`/admin/updateTournament/${id}`, formData, {
-          headers: {
-              'Content-Type': 'multipart/form-data'
-          }
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
-      alert('Турнир обновлен успешно!');
+      setSnackbarMessage('Турнир обновлен успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
     } catch (error) {
-      alert('Ошибка при обновлении турнира!');
+      setSnackbarMessage('Ошибка при обновлении турнира! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', maxWidth: '900px', fontSize: '1.9rem' }}>
-     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, fontSize: '2rem' }}>
-      <FormControl fullWidth           sx={{ width: '48%' }}
->
-        <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Выбрать турнир</InputLabel>
-        <Select
-          labelId="tournament-select-label"
-          value={selectedTournament}
-          label="Выбрать турнир"
-          onChange={(e) => setSelectedTournament(e.target.value)}
-          sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, fontSize: '2rem' }}>
+        <FormControl fullWidth sx={{ width: '48%' }}>
+          <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Выбрать турнир</InputLabel>
+          <Select
+            labelId="tournament-select-label"
+            value={selectedTournament}
+            label="Выбрать турнир"
+            onChange={(e) => setSelectedTournament(e.target.value)}
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
               },
-            },
-          }}
-        >
-          {tournaments.map((tournament) => (
-            <MenuItem key={tournament.id} value={tournament.id}>
-              {tournament.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <TextField
-        label="ID турнира"
-        fullWidth
-        value={id}
-        onChange={(e) => setId(e.target.value)}
-        sx={{ width: '48%' }}
-        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-        InputProps={{ style: { fontSize: '1.5rem' } }}
-        disabled
-      />
-       </Box>
-       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
-       <TextField
+            }}
+          >
+            {tournaments.map((tournament) => (
+              <MenuItem key={tournament.id} value={tournament.id}>
+                {tournament.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          label="ID турнира"
+          fullWidth
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          sx={{ width: '48%' }}
+          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+          InputProps={{ style: { fontSize: '1.5rem' } }}
+          disabled
+        />
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <TextField
           label="Название"
           fullWidth
           value={name}
@@ -166,55 +174,53 @@ const UpdateTournament = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <FormControl fullWidth sx={{ width: '48%' }}>
-      <InputLabel id="status-label" sx={{ fontSize: '1.5rem' }}>Статус</InputLabel>
-      <Select
-        labelId="status-label"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        label="Статус"
-        sx={{ fontSize: '1.5rem' }}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              fontSize: '1.5rem',
-            },
-          },
-        }}
-      >
-        <MenuItem value="Upcoming"  sx={{ fontSize: '1.5rem' }}>Upcoming</MenuItem>
-        <MenuItem value="Ongoing"  sx={{ fontSize: '1.5rem' }}>Ongoing</MenuItem>
-        <MenuItem value="Completed"  sx={{ fontSize: '1.5rem' }}>Completed</MenuItem>
-      </Select>
-    </FormControl>
-    <FormControl fullWidth sx={{ width: '48%' }} >
-      <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
-      <Select
-        labelId="discipline-label"
-        value={discipline}
-        onChange={(e) => setDiscipline(e.target.value)}
-        label="Дисциплина"
-        sx={{ fontSize: '1.5rem' }}
-        MenuProps={{
-          PaperProps: {
-            style: {
-              fontSize: '1.5rem',
-            },
-          },
-        }}
-      >
-        <MenuItem value="PUBG"  sx={{ fontSize: '1.5rem' }}>PUBG</MenuItem>
-        <MenuItem value="HOK"  sx={{ fontSize: '1.5rem' }}>HOK</MenuItem>
-        <MenuItem value="MOB"  sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
-      </Select>
-    </FormControl>
-    </Box>
-
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
-    <TextField
+          <InputLabel id="status-label" sx={{ fontSize: '1.5rem' }}>Статус</InputLabel>
+          <Select
+            labelId="status-label"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            label="Статус"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            <MenuItem value="Upcoming" sx={{ fontSize: '1.5rem' }}>Upcoming</MenuItem>
+            <MenuItem value="Ongoing" sx={{ fontSize: '1.5rem' }}>Ongoing</MenuItem>
+            <MenuItem value="Completed" sx={{ fontSize: '1.5rem' }}>Completed</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ width: '48%' }} >
+          <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
+          <Select
+            labelId="discipline-label"
+            value={discipline}
+            onChange={(e) => setDiscipline(e.target.value)}
+            label="Дисциплина"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            <MenuItem value="PUBG" sx={{ fontSize: '1.5rem' }}>PUBG</MenuItem>
+            <MenuItem value="HOK" sx={{ fontSize: '1.5rem' }}>HOK</MenuItem>
+            <MenuItem value="MOB" sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <TextField
           label="Призовой фонд"
           fullWidth
           value={prizepool}
@@ -223,7 +229,6 @@ const UpdateTournament = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-        
         <TextField
           label="Результат"
           fullWidth
@@ -233,53 +238,44 @@ const UpdateTournament = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-          </Box>
-       
-        
-        <TextField
-          label="Контент"
+      </Box>
+      <TextField
+        label="Контент"
+        fullWidth
+        multiline
+        rows={4}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        sx={{ mb: 2, mt: 2 }}
+        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+        InputProps={{ style: { fontSize: '1.5rem' } }}
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Button
+          variant="contained"
+          component="label"
           fullWidth
-          multiline
-          rows={4}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          sx={{ mb: 2, mt: 2 }}
-          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-          InputProps={{ style: { fontSize: '1.5rem' } }}
-        />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
-       <Button
-    variant="contained"
-    component="label"
-    fullWidth
-    sx={{width: '48%' }}
-  >
-    Загрузить изображение
-    <input
-      type="file"
-      hidden
-      onChange={handleImageChange}
-    />
-  </Button>
-  
-        <Button variant="contained"    sx={{ width: '48%' }} onClick={handleSubmit}>Обновить</Button>
+          sx={{ width: '48%' }}
+        >
+          Загрузить изображение
+          <input
+            type="file"
+            hidden
+            onChange={handleImageChange}
+          />
+        </Button>
+        <Button variant="contained" sx={{ width: '48%' }} onClick={handleSubmit}>Обновить</Button>
+      </Box>
+      {img && (
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
         </Box>
-        {img && (
-    <Box sx={{ textAlign: 'center', mt: 2 }}>
-      <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
-    </Box>
-  )}
-      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-      Изображение успешно загружено!
-    </Alert>
-  </Snackbar>
-  <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-      Ошибка при загрузке изображения!
-    </Alert>
-  </Snackbar>
+      )}
+      <Snackbar open={openSnackbar} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

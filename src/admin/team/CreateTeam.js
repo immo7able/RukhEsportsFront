@@ -9,8 +9,9 @@ const CreateTeam = () => {
   const [img, setImg] = useState('');
   const [discipline, setDiscipline] = useState('');
   const [rukhTeam, setRukhTeam] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openError, setOpenError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -19,18 +20,24 @@ const CreateTeam = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
+        setSnackbarMessage('Изображение успешно загружено!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
       };
       reader.onerror = () => {
-        setOpenError(true);
+        setSnackbarMessage('Ошибка при загрузке изображения!');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleClose = () => {
-    setOpenSuccess(false);
-    setOpenError(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
@@ -46,15 +53,18 @@ const CreateTeam = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('Команда создана успешно!');
+      setSnackbarMessage('Команда создана успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
     } catch (error) {
-      alert('Ошибка при создании команды!');
+      setSnackbarMessage('Ошибка при создании команды! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px' }}>
-      <TextField
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>      <TextField
         label="Название"
         fullWidth
         value={name}
@@ -113,8 +123,8 @@ const CreateTeam = () => {
             },
           }}
         >
-          <MenuItem value="false" sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
-          <MenuItem value="true" sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
+          <MenuItem value={false} sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
+          <MenuItem value={true} sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
         </Select>
       </FormControl>
       
@@ -142,15 +152,9 @@ const CreateTeam = () => {
         </Box>
       )}
       
-      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Изображение успешно загружено!
-        </Alert>
-      </Snackbar>
-      
-      <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          Ошибка при загрузке изображения!
+      <Snackbar open={openSnackbar} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

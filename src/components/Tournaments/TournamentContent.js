@@ -79,7 +79,7 @@ const TournamentContent = ({ tournament, isMobile }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid white', padding: 2, borderRadius: 8, mr: 2 }}>
             <EmojiEventsIcon sx={{ color: 'white', width: isMobile ? 35 : 55, height: isMobile ? 35 : 55, mr: 1 }} />
             <Typography sx={{ fontSize: isMobile ? 17 : 25, fontFamily: 'Oswald, serif', color: 'white' }}>
-              {tournament.prizepool}
+              {tournament.prizepool} ₸
             </Typography>
           </Box>
           {tournament.status === 'Completed' && (

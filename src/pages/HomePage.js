@@ -86,11 +86,15 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <Box className="loader">
-        <Box className="half-ring"></Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Box className="loader">
+          <Box className="half-ring"></Box>
+        </Box>
       </Box>
     );
   }
+  
+  
   
 
   const slides = [

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, Input, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Box, Button, Typography, Input, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert } from '@mui/material';
 import { getTopImage, uploadImage } from '../api/imageApi'; 
 
 const CoverManagement = () => {
@@ -7,6 +7,9 @@ const CoverManagement = () => {
   const [selectedTab, setSelectedTab] = useState('pubg');
   const [image, setImage] = useState(null);
   const [currentImage, setCurrentImage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -29,6 +32,13 @@ const CoverManagement = () => {
     setImage(e.target.files[0]);
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   const handleSubmit = async () => {
     if (image) {
       const formData = new FormData();
@@ -39,17 +49,24 @@ const CoverManagement = () => {
       try {
         console.log('Отправка данных:', { file: image.name, page, selectedTab });
         const response = await uploadImage(formData);
-        alert('Обложка обновлена успешно!');
+        setSnackbarMessage('Обложка обновлена успешно! Нажмите на пустое пространство чтобы закрыть окно');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
         console.log('Ответ сервера:', response);
       } catch (error) {
         console.error('Ошибка при загрузке обложки!', error);
-        alert(`Ошибка при загрузке обложки! Сообщение: ${error.message}`);
+        setSnackbarMessage(`Ошибка при загрузке обложки! Сообщение: ${error.message}`);
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       }
     }
   };
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, maxWidth: '800px', mx: 'auto', bgcolor: 'background.paper', boxShadow: 3, borderRadius: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Управление обложками
+      </Typography>
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="page-select-label">Страница</InputLabel>
         <Select
@@ -78,17 +95,27 @@ const CoverManagement = () => {
         </Select>
       </FormControl>
       <Box sx={{ mb: 2 }}>
-        <Typography>Текущая обложка:</Typography>
-        {currentImage && <img src={currentImage} alt="Current cover" style={{ maxWidth: '100%' }} />}
+        <Typography variant="subtitle1">Текущая обложка:</Typography>
+        {currentImage ? (
+          <img src={currentImage} alt="Current cover" style={{ width: '100%', borderRadius: '8px' }} />
+        ) : (
+          <Typography variant="body2" color="textSecondary">Обложка отсутствует</Typography>
+        )}
       </Box>
       <Input
         type="file"
         onChange={handleFileChange}
-        sx={{ mb: 2 }}
+        sx={{ mb: 2, display: 'block' }}
       />
-      <Button variant="contained" onClick={handleSubmit}>
+      <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 2 }}>
         Загрузить новую обложку
       </Button>
+
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

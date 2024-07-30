@@ -6,3 +6,4 @@ export const addComment = (id, comment, parentId = null) => {
     console.log("Отправка данных на сервер:", data);
     return api.post(`comments/${id}`, data);
 };
+export const deleteComment = (id) => api.delete(`comments/${id}`);

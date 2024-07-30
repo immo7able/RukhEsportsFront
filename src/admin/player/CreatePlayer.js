@@ -16,8 +16,9 @@ const CreatePlayer = () => {
   const [discipline] = useState('');
 
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openError, setOpenError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -54,18 +55,24 @@ const CreatePlayer = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
+        setSnackbarMessage('Изображение успешно загружено!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
       };
       reader.onerror = () => {
-        setOpenError(true);
+        setSnackbarMessage('Ошибка при загрузке изображения!');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleClose = () => {
-    setOpenSuccess(false);
-    setOpenError(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
@@ -82,15 +89,19 @@ const CreatePlayer = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('Игрок создан успешно!');
+      setSnackbarMessage('Игрок создан успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
     } catch (error) {
-      alert('Ошибка при создании игрока!');
+      setSnackbarMessage('Ошибка при создании игрока! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <TextField
           label="Никнейм"
           fullWidth
@@ -204,14 +215,9 @@ const CreatePlayer = () => {
           <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
         </Box>
       )}
-      <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Изображение успешно загружено!
-        </Alert>
-      </Snackbar>
-      <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          Ошибка при загрузке изображения!
+      <Snackbar open={openSnackbar} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </Box>

@@ -7,6 +7,7 @@ import NewsPage from './pages/news/NewsPage';
 import NewsDetail from './components/News/NewsDetail';
 import SignUp from './components/Auth/SignUp';
 import Login from './components/Auth/Login';
+import ForgotPassword from './components/Auth/ForgotPassword';
 import Profile from './components/Auth/Profile';
 import TournamentsPage from './pages/Tournaments/TournamentsPage';
 import TournamentDetail from './components/Tournaments/TournamentDetail';
@@ -62,6 +63,8 @@ const App = () => {
             <Route path="/matches/*" element={<MatchesPage />} />
             <Route path="/matches/:type/:id" element={<MatchDetail />} />
             <Route path="/team/*" element={<TeamPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+
           </Routes>
         </Box>
       </Router>

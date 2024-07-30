@@ -18,8 +18,9 @@ const CreateMatch = () => {
   const [team2Id, setTeam2Id] = useState('');
   const [tournaments, setTournaments] = useState([]);
   const [teams, setTeams] = useState([]);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openError, setOpenError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchTournaments = async () => {
@@ -65,30 +66,27 @@ const CreateMatch = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
+        setSnackbarMessage('Изображение успешно загружено!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
       };
       reader.onerror = () => {
-        setOpenError(true);
+        setSnackbarMessage('Ошибка при загрузке изображения!');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleClose = () => {
-    setOpenSuccess(false);
-    setOpenError(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
-    if (!title) {
-      alert('Пожалуйста, введите заголовок.');
-      return;
-    }
-    if (!status) {
-      alert('Пожалуйста, введите статус матча.');
-      return;
-    }
-
     const formData = new FormData();
     formData.append('title', title);
     formData.append('date', date);
@@ -107,29 +105,47 @@ const CreateMatch = () => {
         }
       });
 
-      alert('Матч создан успешно!');
+      setSnackbarMessage('Матч создан успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
     } catch (error) {
-      alert('Ошибка при создании матча!');
+      setSnackbarMessage('Ошибка при создании матча! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto',  width: '80%', maxWidth: '900px' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <FormControl sx={{ width: '48%' }}>
+          <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Какой турнир</InputLabel>
+          <Select
+            labelId="tournament-select-label"
+            value={tournamentId}
+            onChange={handleTournamentChange}
+            label="Турнир"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            {tournaments.map((tournament) => (
+              <MenuItem key={tournament.id} value={tournament.id}>
+                {tournament.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           label="Название"
           fullWidth
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          sx={{ width: '48%' }}
-          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-          InputProps={{ style: { fontSize: '1.5rem' } }}
-        />
-        <TextField
-          type="date"
-          fullWidth
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
           sx={{ width: '48%' }}
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
@@ -157,7 +173,29 @@ const CreateMatch = () => {
             <MenuItem value="Completed" sx={{ fontSize: '1.5rem' }}>Completed</MenuItem>
           </Select>
         </FormControl>
-        <FormControl fullWidth sx={{ width: '48%' }}>
+        <TextField
+          type="date"
+          fullWidth
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          sx={{ width: '48%' }}
+          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+          InputProps={{ style: { fontSize: '1.5rem' } }}
+        />
+      </Box>
+      
+      <TextField
+        label="YouTube URL"
+        fullWidth
+        value={youtubeUrl}
+        onChange={(e) => setYoutubeUrl(e.target.value)}
+        sx={{ mt: 2 }}
+        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+        InputProps={{ style: { fontSize: '1.5rem' } }}
+      />
+      
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, mt: 2 }}>
+      <FormControl fullWidth sx={{ width: '48%' }}>
           <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
           <Select
             labelId="discipline-label"
@@ -179,42 +217,6 @@ const CreateMatch = () => {
             <MenuItem value="mob" sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
           </Select>
         </FormControl>
-      </Box>
-      
-      <TextField
-        label="YouTube URL"
-        fullWidth
-        value={youtubeUrl}
-        onChange={(e) => setYoutubeUrl(e.target.value)}
-        sx={{ mt: 2 }}
-        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-        InputProps={{ style: { fontSize: '1.5rem' } }}
-      />
-      
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, mt: 2 }}>
-        <FormControl sx={{ width: '48%' }}>
-          <InputLabel id="tournament-select-label" sx={{ fontSize: '1.5rem' }}>Турнир</InputLabel>
-          <Select
-            labelId="tournament-select-label"
-            value={tournamentId}
-            onChange={handleTournamentChange}
-            label="Турнир"
-            sx={{ fontSize: '1.5rem' }}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  fontSize: '1.5rem',
-                },
-              },
-            }}
-          >
-            {tournaments.map((tournament) => (
-              <MenuItem key={tournament.id} value={tournament.id}>
-                {tournament.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
         <TextField
           label="Результат"
           fullWidth
@@ -229,84 +231,79 @@ const CreateMatch = () => {
         <FormControl sx={{ width: '48%' }}>
           <InputLabel id="team1-select-label" sx={{ fontSize: '1.5rem' }}>Команда 1</InputLabel>
           <Select
-            labelId="
-team1-select-label"
-value={team1Id}
-onChange={(e) => setTeam1Id(e.target.value)}
-label="Команда 1"
-sx={{ fontSize: '1.5rem' }}
-MenuProps={{
-PaperProps: {
-style: {
-fontSize: '1.5rem',
-},
-},
-}}
->
-{teams.filter(team => team.id !== team2Id).map((team) => (
-<MenuItem key={team.id} value={team.id}>
-{team.name}
-</MenuItem>
-))}
-</Select>
-</FormControl>
-<FormControl sx={{ width: '48%' }}>
-<InputLabel id="team2-select-label" sx={{ fontSize: '1.5rem' }}>Команда 2</InputLabel>
-<Select
-labelId="team2-select-label"
-value={team2Id}
-onChange={(e) => setTeam2Id(e.target.value)}
-label="Команда 2"
-sx={{ fontSize: '1.5rem' }}
-MenuProps={{
-PaperProps: {
-style: {
-fontSize: '1.5rem',
-},
-},
-}}
->
-{teams.filter(team => team.id !== team1Id).map((team) => (
-<MenuItem key={team.id} value={team.id}>
-{team.name}
-</MenuItem>
-))}
-</Select>
-</FormControl>
-</Box>
-<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-<Button
-variant="contained"
-component="label"
-fullWidth
-sx={{width: '48%' }}
->
-Загрузить изображение
-<input
-         type="file"
-         hidden
-         onChange={handleImageChange}
-       />
-</Button>
-<Button variant="contained" sx={{width: '48%' }} onClick={handleSubmit}>Создать</Button>
-</Box>
-{img && (
-<Box sx={{ textAlign: 'center', mt: 2 }}>
-<img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
-</Box>
+            labelId="team1-select-label"
+            value={team1Id}
+            onChange={(e) => setTeam1Id(e.target.value)}
+            label="Команда 1"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            {teams.filter(team => team.id !== team2Id).map((team) => (
+              <MenuItem key={team.id} value={team.id}>
+                {team.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ width: '48%' }}>
+          <InputLabel id="team2-select-label" sx={{ fontSize: '1.5rem' }}>Команда 2</InputLabel>
+          <Select
+            labelId="team2-select-label"
+            value={team2Id}
+            onChange={(e) => setTeam2Id(e.target.value)}
+            label="Команда 2"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            {teams.filter(team => team.id !== team1Id).map((team) => (
+              <MenuItem key={team.id} value={team.id}>
+                {team.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+          sx={{ width: '48%' }}
+        >
+          Загрузить изображение
+          <input
+            type="file"
+            hidden
+            onChange={handleImageChange}
+          />
+        </Button>
+        <Button variant="contained" sx={{ width: '48%' }} onClick={handleSubmit}>Создать</Button>
+      </Box>
+      {img && (
+  <Box sx={{ textAlign: 'center', mt: 2, maxHeight: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+    <img src={img} alt="uploaded" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+  </Box>
 )}
-<Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-<Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-Изображение успешно загружено!
-</Alert>
-</Snackbar>
-<Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-<Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-Ошибка при загрузке изображения!
-</Alert>
-</Snackbar>
-</Box>
-);
+
+      <Snackbar open={openSnackbar} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
 };
 
 export default CreateMatch;

@@ -134,6 +134,14 @@ const Login = ({ setIsAuthenticated }) => {
               fullWidth
               variant="text"
               sx={{ mt: 1, mb: 2, color: '#008e82' }}
+              onClick={() => navigate('/forgot-password')}
+            >
+              Забыли пароль?
+            </Button>
+            <Button
+              fullWidth
+              variant="text"
+              sx={{ mt: 1, mb: 2, color: '#008e82' }}
               onClick={() => navigate('/signup')}
             >
               Вернуться к регистрации

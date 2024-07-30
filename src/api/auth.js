@@ -27,3 +27,13 @@ export const signUp = async (email, password, confirmPassword) => {
 export const logout = () => {
   localStorage.removeItem('token');
 };
+
+
+export const forgotPassword = async (email) => {
+  try {
+    const response = await api.post('/forgot-password', { email });
+    return response;
+  } catch (error) {
+    throw new Error('Ошибка при восстановлении пароля: ' + error.message);
+  }
+};

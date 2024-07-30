@@ -62,16 +62,22 @@ const MatchDetail = ({ isAuthenticated }) => {
 
   if (loading) {
     return (
-      <Box className="loader">
-        <Box className="half-ring"></Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Box className="loader">
+          <Box className="half-ring"></Box>
+        </Box>
       </Box>
     );
   }
   
-
   if (error) {
-    return <Typography variant="h6" color="error">{error}</Typography>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Typography variant="h6" color="error">{error}</Typography>
+      </Box>
+    );
   }
+  
 
   if (!match) {
     return <Typography variant="h6" color="error">Матч не найден.</Typography>;

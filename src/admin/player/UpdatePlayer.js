@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, IconButton, Snackbar, Alert } from '@mui/material';
-import {getPlayer, getAllTeams} from '../../api/team';
+import { getPlayer, getAllTeams } from '../../api/team';
 import api from '../../api/api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -17,10 +17,9 @@ const UpdatePlayer = () => {
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState('');
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openError, setOpenError] = useState(false);
-  const [discipline] = useState('');
-
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -101,18 +100,24 @@ const UpdatePlayer = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImg(reader.result);
-        setOpenSuccess(true);
+        setSnackbarMessage('Изображение успешно загружено!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
       };
       reader.onerror = () => {
-        setOpenError(true);
+        setSnackbarMessage('Ошибка при загрузке изображения!');
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleClose = () => {
-    setOpenSuccess(false);
-    setOpenError(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
@@ -129,15 +134,19 @@ const UpdatePlayer = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      alert('Игрок обновлен успешно!');
+      setSnackbarMessage('Игрок обновлен успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
     } catch (error) {
-      alert('Ошибка при обновлении игрока!');
+      setSnackbarMessage('Ошибка при обновлении игрока! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
     }
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto',  width: '80%', maxWidth: '900px' }}>
-      <FormControl fullWidth sx={{ mb: 2 }}>
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+<FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="player-select-label" sx={{ fontSize: '1.5rem' }}>Выбрать игрока</InputLabel>
         <Select
           labelId="player-select-label"
@@ -161,26 +170,25 @@ const UpdatePlayer = () => {
         </Select>
       </FormControl>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-      <TextField
-        label="Никнейм"
-        fullWidth
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-        sx={{ width: '48%' }}
-        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+        <TextField
+          label="Никнейм"
+          fullWidth
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          sx={{ width: '48%' }}
+          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
-      />
-      <TextField
-        label="Имя"
-        fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        sx={{ width: '48%' }}
-        InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+        />
+        <TextField
+          label="Имя"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          sx={{ width: '48%' }}
+          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
-      />
-            </Box>
-
+        />
+      </Box>
 
       <TextField
         label="Контент"
@@ -193,36 +201,33 @@ const UpdatePlayer = () => {
         InputProps={{ style: { fontSize: '1.5rem' } }}
         sx={{ mb: 2 }}
       />
-                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-
-      <FormControl fullWidth sx={{ mb: 2,  width: '48%' }}>
-        <InputLabel id="team-select-label"   sx={{ fontSize: '1.5rem' }}>Команда</InputLabel>
-        <Select
-          labelId="team-select-label"
-          value={teamId}
-          onChange={(e) => setTeamId(e.target.value)}
-          label="Команда"
-          sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <FormControl fullWidth sx={{ mb: 2, width: '48%' }}>
+          <InputLabel id="team-select-label" sx={{ fontSize: '1.5rem' }}>Команда</InputLabel>
+          <Select
+            labelId="team-select-label"
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            label="Команда"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
               },
-            },
-          }}
-        >
-          {teams.map((team) => (
-            <MenuItem key={team.id} value={team.id}>
-              {team.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+            }}
+          >
+            {teams.map((team) => (
+              <MenuItem key={team.id} value={team.id}>
+                {team.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-      <Button onClick={handleAddSocialMedia} startIcon={<AddIcon />}         sx={{ border: 1, width: '48%' }}
-      >Добавить соцсеть</Button>
+        <Button onClick={handleAddSocialMedia} startIcon={<AddIcon />} sx={{ border: 1, width: '48%' }}>Добавить соцсеть</Button>
       </Box>
-
 
       {socialMediaLinks.map((link, index) => (
         <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -255,40 +260,34 @@ const UpdatePlayer = () => {
           </IconButton>
         </Box>
       ))}
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+          sx={{ width: '48%' }}
+        >
+          Загрузить изображение
+          <input
+            type="file"
+            hidden
+            onChange={handleImageChange}
+          />
+        </Button>
 
-<Button
-variant="contained"
-component="label"
-fullWidth
-sx={{width: '48%' }}
->
-Загрузить изображение
-<input
-type="file"
-hidden
-onChange={handleImageChange}
-/>
-</Button>
-
-  <Button variant="contained" sx={{width: '48%' }}
- onClick={handleSubmit}>Обновить</Button>
-  </Box>
-  {img && (
-    <Box sx={{ textAlign: 'center', mt: 2 }}>
-      <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
-    </Box>
-  )}
-  <Snackbar open={openSuccess} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-      Изображение успешно загружено!
-    </Alert>
-  </Snackbar>
-  <Snackbar open={openError} autoHideDuration={6000} onClose={handleClose}>
-    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-      Ошибка при загрузке изображения!
-    </Alert>
-  </Snackbar>
+        <Button variant="contained" sx={{ width: '48%' }} onClick={handleSubmit}>Обновить</Button>
+      </Box>
+      {img && (
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <img src={img} alt="uploaded" style={{ maxWidth: '100%' }} />
+        </Box>
+      )}
+      <Snackbar open={openSnackbar} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

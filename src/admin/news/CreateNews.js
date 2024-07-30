@@ -84,8 +84,8 @@ const CreateNews = () => {
   };
 
   return (
-    <Box sx={{ p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '1000px' }}>
-      <TextField
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+<TextField
         label="Заголовок"
         fullWidth
         value={title}

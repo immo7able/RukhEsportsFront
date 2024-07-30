@@ -112,8 +112,8 @@ const UpdateNews = () => {
   };
 
   return (
-    <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto',  width: '80%', maxWidth: '1000px' }}>
-      <FormControl fullWidth sx={{ mb: 2 }}>
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+<FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="news-select-label"           sx={{ fontSize: '1.5rem' }}
         >Выбрать новость</InputLabel>
         <Select

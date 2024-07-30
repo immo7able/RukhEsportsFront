@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, TextField, Button, Avatar } from '@mui/material';
+import { Typography, Box, TextField, Button, Avatar, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 import { getProfile, updateEmail, updatePassword, updateNickname, uploadProfileImage } from '../../api/profile';
 import { logout } from '../../api/auth';
@@ -40,6 +40,8 @@ const Profile = () => {
   const [nickname, setNickname] = useState('');
   const [profileImage, setProfileImage] = useState('');
   const [error, setError] = useState('');
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -59,6 +61,10 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
+  const handleSnackbarClose = () => {
+    setOpenSuccess(false);
+  };
+
   const handleUpdateEmail = async () => {
     try {
       const response = await updateEmail(email);
@@ -66,6 +72,8 @@ const Profile = () => {
         throw new Error(response.data.error);
       }
       localStorage.setItem('token', response.data.token);
+      setSuccessMessage("Email успешно изменен");
+      setOpenSuccess(true);
       setError("");
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -82,6 +90,8 @@ const Profile = () => {
       if (response.data.error) {
         throw new Error(response.data.error);
       }
+      setSuccessMessage("Пароль успешно изменен");
+      setOpenSuccess(true);
       setError("");
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -98,6 +108,8 @@ const Profile = () => {
       if (response.data.error) {
         throw new Error(response.data.error);
       }
+      setSuccessMessage("Никнейм успешно сохранен");
+      setOpenSuccess(true);
       setError("");
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -125,6 +137,8 @@ const Profile = () => {
       try {
         const { data } = await uploadProfileImage(formData);
         setProfileImage(data.avatar);
+        setSuccessMessage("Изображение профиля успешно обновлено");
+        setOpenSuccess(true);
       } catch (error) {
         setError('Ошибка при загрузке изображения профиля');
       }
@@ -136,72 +150,72 @@ const Profile = () => {
       <FormBox>
 
         {error && <Typography color="rgb(220, 20, 60)" variant="h6">{error}</Typography>}
-         <Box display="flex" alignItems="center" marginBottom={2}>
-        <Button
-          variant="contained"
-          sx={{ 
-            backgroundColor: 'rgb(220, 20, 60, 0.8)', 
-            borderRadius: '50%', 
-            color: '#fff', 
-            width: 50, 
-            height: 50, 
-            minWidth: 'auto', 
-            '&:hover': { backgroundColor: '#cc0000' }, 
-            marginRight: 4 
-          }}
-          onClick={handleLogout}
-        >
-          <LogoutIcon sx={{ marginLeft: 1 }} />
-        </Button>
-        <Avatar
-          src={profileImage}
-          alt="Profile Image"
-          sx={{ width: 150, height: 150, marginRight: 4 }}
-        />
-           <Button
-               variant="contained"
-               component="label"
-               sx={{
-                 backgroundColor: '#008e82',
-                 borderRadius: '50%',
-                 color: '#fff',
-                 width: 50,
-                 height: 50,
-                 minWidth: 'auto',
-                 '&:hover': {backgroundColor: '#006f69'}
-               }}
-           >
-             <UploadFileIcon/>
-             <input
-                 type="file"
-                 hidden
-                 onChange={(e) => {
-                   const file = e.target.files[0];
-                   if (file) {
-                     if (file.size > 1024 * 1024) {
-                       setError('Размер превышает 1 мб');
-                       setTimeout(() => setError(''), 5000);
-                     } else {
-                       handleProfileImageChange(e);
-                     }
-                   }
-                 }}
-             />
-           </Button>
-         </Box>
+        <Box display="flex" alignItems="center" marginBottom={2}>
+          <Button
+            variant="contained"
+            sx={{ 
+              backgroundColor: 'rgb(220, 20, 60, 0.8)', 
+              borderRadius: '50%', 
+              color: '#fff', 
+              width: 50, 
+              height: 50, 
+              minWidth: 'auto', 
+              '&:hover': { backgroundColor: '#cc0000' }, 
+              marginRight: 4 
+            }}
+            onClick={handleLogout}
+          >
+            <LogoutIcon sx={{ marginLeft: 1 }} />
+          </Button>
+          <Avatar
+            src={profileImage}
+            alt="Profile Image"
+            sx={{ width: 150, height: 150, marginRight: 4 }}
+          />
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              backgroundColor: '#008e82',
+              borderRadius: '50%',
+              color: '#fff',
+              width: 50,
+              height: 50,
+              minWidth: 'auto',
+              '&:hover': {backgroundColor: '#006f69'}
+            }}
+          >
+            <UploadFileIcon/>
+            <input
+              type="file"
+              hidden
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  if (file.size > 1024 * 1024) {
+                    setError('Размер превышает 1 мб');
+                    setTimeout(() => setError(''), 5000);
+                  } else {
+                    handleProfileImageChange(e);
+                  }
+                }
+              }}
+            />
+          </Button>
+        </Box>
 
         <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            id="email"
-            label="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            InputLabelProps={{style: {color: '#008e82'}}}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: '#008e82' },
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="email"
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          InputLabelProps={{style: {color: '#008e82'}}}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': { borderColor: '#008e82' },
               '&:hover fieldset': { borderColor: '#008e82' },
               '&.Mui-focused fieldset': { borderColor: '#008e82' },
             },
@@ -269,8 +283,12 @@ const Profile = () => {
         >
           Сохранить Никнейм
         </Button>
-        
       </FormBox>
+      <Snackbar open={openSuccess} autoHideDuration={10000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </StyledContainer>
   );
 };
