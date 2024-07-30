@@ -1,11 +1,13 @@
 import React from 'react';
 import { Box, Link } from '@mui/material';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { SlSocialVkontakte } from "react-icons/sl";
+import { CiYoutube } from "react-icons/ci";
+import { FaInstagram } from "react-icons/fa";
+
+
 
 const Footer = () => {
   const theme = useTheme();
@@ -13,22 +15,20 @@ const Footer = () => {
 
   return (
     <Box component="footer" sx={{ bgcolor: 'rgba(0, 142, 130, 0.7)', color: 'white', padding: '40px 0', textAlign: 'center', marginTop: '80px' }}>
-      <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap="70px">
-        <Box display="flex" justifyContent="center" gap="8px">
-          <Link href="https://twitter.com" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
-            <TwitterIcon />
+      <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row" gap="70px" fontSize={30}>
+        <Box display="flex" justifyContent="center" gap="8px" >
+          <Link href="https://vk.com/rukhesports" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
+          <SlSocialVkontakte />
           </Link>
-          <Link href="https://instagram.com" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
-            <InstagramIcon />
+          <Link href="https://www.instagram.com/rukh_esports/" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
+          <FaInstagram />
           </Link>
-          <Link href="https://facebook.com" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
-            <FacebookIcon />
-          </Link>
-          <Link href="https://youtube.com" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
-            <YouTubeIcon />
+          <Link href="https://www.youtube.com/@RUKH_ESPORTS" color="inherit" target="_blank" rel="noopener" className="footer-social-network-icons">
+          <CiYoutube />
+
           </Link>
         </Box>
-        <Box display="flex" justifyContent="center" gap="10px">
+        {/* <Box display="flex" justifyContent="center" gap="10px">
           <Link href="/kz" color="inherit" underline="none" sx={{ '&:hover': { textDecoration: 'underline' } }}>
             KZ
           </Link>
@@ -38,7 +38,7 @@ const Footer = () => {
           <Link href="/ru" color="inherit" underline="none" sx={{ '&:hover': { textDecoration: 'underline' } }}>
             РУ
           </Link>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
