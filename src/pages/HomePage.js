@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, useMediaQuery, Container, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Footer from '../components/Footer';
 import logo1 from '../images/musruk2.png';
@@ -18,6 +18,7 @@ import MatchesTable from './MatchesTable';
 
 const HomePage = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [tournaments, setTournaments] = useState([]);
@@ -84,6 +85,8 @@ const HomePage = () => {
     setLoading(false); 
   }, []);
 
+  
+
   if (loading) {
     return (
       <Box className="loader">
@@ -92,6 +95,11 @@ const HomePage = () => {
     );
   }
   
+  const handleNewsClick = (type, id) => {
+    console.log(type);
+    console.log(id);
+    navigate(`/newspage/${type}/${id}`, { state: { from: `/newspage/${type}` } });
+  };
 
   const slides = [
     { id: 0, image: sliderImage, title: 'Rukh Esport', type: '' },
@@ -129,9 +137,10 @@ const HomePage = () => {
               <Box
                 key={index}
                 component={Link}
+                onClick={(type)=> handleNewsClick(type)}
                 to={`/newspage/${slide.type}/${slide.id}`}
                 state={{ from: `/newspage/${slide.type}` }}
-                sx={{ position: 'relative', mb: 4, height: '400px', textDecoration: 'none' }}
+                sx={{ position: 'relative', mb: 4, height: '400px', textDecoration: 'none', cursor: 'pointer' }}
               >
                 <img src={slide.image} alt={slide.title} style={{ width: '100%', height: '400px', borderRadius: '35px', objectFit: 'cover' }} />
                 <Box
@@ -146,6 +155,7 @@ const HomePage = () => {
                     display: 'flex',
                     justifyContent: 'left',
                     alignItems: 'flex-end',
+                    cursor: 'pointer'
                   }}
                 >
                   <Typography

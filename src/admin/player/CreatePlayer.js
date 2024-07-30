@@ -13,7 +13,7 @@ const CreatePlayer = () => {
   const [imgUpl, setImgUpl] = useState(null);
   const [teamId, setTeamId] = useState('');
   const [teams, setTeams] = useState([]);
-  const [discipline, setDiscipline] = useState('');
+  const [discipline] = useState('');
 
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
   const [openSuccess, setOpenSuccess] = useState(false);

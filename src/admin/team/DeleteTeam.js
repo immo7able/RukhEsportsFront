@@ -6,12 +6,14 @@ import { getTeams } from '../../api/team';
 const DeleteTeam = () => {
   const [id, setId] = useState('');
   const [teams, setTeams] = useState([]);
+  const [discipline] = useState('');
+
   const [selectedTeam, setSelectedTeam] = useState('');
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await getTeams();
+        const response = await getTeams(discipline);
         setTeams(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);

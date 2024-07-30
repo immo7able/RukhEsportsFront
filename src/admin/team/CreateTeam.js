@@ -113,8 +113,8 @@ const CreateTeam = () => {
             },
           }}
         >
-          <MenuItem value="Нет" sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
-          <MenuItem value="Да" sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
+          <MenuItem value="norukh" sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
+          <MenuItem value="rukh" sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
         </Select>
       </FormControl>
       

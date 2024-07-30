@@ -52,6 +52,7 @@ const CoverManagement = () => {
           <MenuItem value="news">Новости</MenuItem>
           <MenuItem value="tournaments">Турниры</MenuItem>
           <MenuItem value="teams">Команды и игроки</MenuItem>
+          <MenuItem value="matches">Матчи</MenuItem>
         </Select>
       </FormControl>
       <FormControl fullWidth sx={{ mb: 2 }}>
