@@ -9,7 +9,7 @@ import LikeButtonWithCounter from './LikeButtonWithCounter';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import NewsContent from './NewsContent';
-import { getNewsItem } from '../../api/news';
+import { getNewsItem, likeNewsItem } from '../../api/news';
 import { getComments, addComment } from '../../api/comments';
 
 const NewsWrapper = styled(Box)(({ theme }) => ({
@@ -103,9 +103,16 @@ const NewsDetail = ({ isAuthenticated }) => {
   };
   
 
-  const handleLikeClick = () => {
+  const handleLikeClick = async () => {
     setLike((prev) => !prev);
     setLikeCount((prevCount) => like ? prevCount - 1 : prevCount + 1);
+    try {
+      await likeNewsItem(id, !like);
+    } catch (error) {
+      console.error('Error liking the news item:', error);
+      setLike((prev) => !prev);
+      setLikeCount((prevCount) => like ? prevCount + 1 : prevCount - 1);
+    }
   };
 
   const handleCommentSubmit = async (newComment, parentId = null) => {
