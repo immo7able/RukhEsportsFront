@@ -9,7 +9,7 @@ const CarouselManagement = () => {
   useEffect(() => {
     const fetchImage = async () => {
       const imgUrl = await getSliderImage();
-      setCurrentImage(imgUrl);
+      setCurrentImage(imgUrl.data.img);
     };
     fetchImage();
   }, []);
@@ -21,7 +21,7 @@ const CarouselManagement = () => {
   const handleSubmit = async () => {
     if (image) {
       const formData = new FormData();
-      formData.append('file', image);
+      formData.append('image', image);
 
       try {
         console.log('Отправка данных:', formData);

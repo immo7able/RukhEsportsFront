@@ -19,8 +19,8 @@ const TournamentsPage = ({ isAuthenticated }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imageUrl = await getTopImage('news', selectedTab); 
-      setTopImage(imageUrl);
+      const imageUrl = await getTopImage('tournaments', selectedTab);
+      setTopImage(imageUrl.data.img);
     };
 
     fetchImage();

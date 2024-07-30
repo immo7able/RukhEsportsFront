@@ -11,7 +11,7 @@ const CoverManagement = () => {
   useEffect(() => {
     const fetchImage = async () => {
       const imgUrl = await getTopImage(page, selectedTab);
-      setCurrentImage(imgUrl);
+      setCurrentImage(imgUrl.data.img);
     };
     fetchImage();
   }, [page, selectedTab]);
@@ -23,9 +23,9 @@ const CoverManagement = () => {
   const handleSubmit = async () => {
     if (image) {
       const formData = new FormData();
-      formData.append('file', image);
+      formData.append('image', image);
       formData.append('page', page);
-      formData.append('selectedTab', selectedTab);
+      formData.append('tab', selectedTab);
 
       try {
         console.log('Отправка данных:', { file: image.name, page, selectedTab });

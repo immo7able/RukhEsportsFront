@@ -22,7 +22,7 @@ const NewsPage = ({ isAuthenticated }) => {
   useEffect(() => {
     const fetchImage = async () => {
       const imageUrl = await getTopImage('news', selectedTab); 
-      setTopImage(imageUrl);
+      setTopImage(imageUrl.data.img);
     };
 
     fetchImage();

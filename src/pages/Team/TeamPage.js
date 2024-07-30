@@ -19,8 +19,8 @@ const TeamPage = ({ isAuthenticated }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const imageUrl = await getTopImage('team', selectedTab);
-      setTopImage(imageUrl);
+      const imageUrl = await getTopImage('teams', selectedTab);
+      setTopImage(imageUrl.data.img);
     };
 
     fetchImage();
