@@ -38,7 +38,6 @@ const AdminPanel = () => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundImage: 'url("/path/to/your/background/image.jpg")',
         backgroundSize: 'cover',
         padding: 4,
       }}
