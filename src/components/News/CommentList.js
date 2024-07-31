@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Avatar, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CommentForm from './CommentForm';
-import { addComment, deleteComment, getComments} from '../../api/comments';
-import { getProfile} from '../../api/profile';
+import { addComment, deleteComment, getComments } from '../../api/comments';
+import { getProfile } from '../../api/profile';
 
 const CommentPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'rgba(23, 54, 50, 0.85)',
@@ -34,6 +34,7 @@ const ReplyButton = styled(Button)(({ theme }) => ({
     color: 'white',
   },
 }));
+
 const DeleteButton = styled(Button)(({ theme }) => ({
   color: 'red',
   ':hover': {
@@ -59,6 +60,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
       try {
         const response = await getProfile();
         setNickname(response.data.nickname);
+        console.log('Profile fetched:', response.data);
       } catch (error) {
         console.error('Ошибка при получении профиля:', error);
       }
@@ -68,6 +70,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
       try {
         const response = await getComments(newsId);
         setLocalComments(response.data);
+        console.log('Comments fetched:', response.data);
       } catch (error) {
         console.error('Ошибка при загрузке комментариев:', error);
       }
@@ -84,8 +87,9 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
         navigate('/login');
         return;
       }
-    
+
       setReplyingTo(commentIndex);
+      console.log(`Replying to comment index: ${commentIndex}`);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         console.error(error.response.data.error);
@@ -98,16 +102,26 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
   const handleCommentSubmit = async (reply, commentIndex) => {
     try {
       const parentId = localComments[commentIndex].id;
+      console.log('Parent ID for reply:', parentId);
       const response = await addComment(newsId, { ...reply, nickname }, parentId);
-      const updatedComments = localComments.map((comment, idx) => {
-        if (idx === commentIndex) {
+      console.log('Reply added:', response.data);
+
+      if (!response.data || !response.data.id) {
+        console.error('Ошибка: сервер не вернул корректные данные ответа.');
+        return;
+      }
+
+      const updatedComments = localComments.map((comment) => {
+        if (comment.id === parentId) {
           return {
             ...comment,
-            replies: [...(comment.replies || []), response.data]
+            replies: [...(comment.replies || []), response.data],
           };
         }
         return comment;
       });
+      console.log('Updated comments after adding reply:', updatedComments);
+
       setLocalComments(updatedComments);
       setReplyingTo(null);
     } catch (error) {
@@ -131,6 +145,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
 
   const renderReplies = (replies) => {
     if (!replies) return null;
+    console.log('Rendering replies:', replies);
     return replies.map((reply, replyIndex) => (
       <ReplyPaper key={reply.id || `${reply.parent_comment_id}-${replyIndex}`} elevation={3}>
         <Box
@@ -180,74 +195,78 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
     ));
   };
 
+  const renderComments = (comments) => {
+    return comments.map((comment, index) => (
+      <CommentPaper key={comment.id || index}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar 
+              src={comment.avatar} 
+              alt={comment.nickname} 
+              sx={{ width: isMobile ? 40 : 50, height: isMobile ? 40 : 50, mr: 1 }} 
+            />
+            <Typography
+              variant="subtitle2"
+              color="white"
+              sx={{ fontSize: isMobile ? '1rem' : '1.3rem', fontFamily: 'Oswald, serif' }}
+            >
+              {comment.nickname}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <Typography
+              variant="subtitle2"
+              color="white"
+              sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mb: 1, fontFamily: 'Oswald, serif' }}
+            >
+              {formatDate(comment.date)}
+            </Typography>
+            {nickname === comment.nickname && (
+              <DeleteButton onClick={() => handleDelete(comment.id)}>
+                Удалить
+              </DeleteButton>
+            )}
+          </Box>
+        </Box>
+        <Typography
+          variant="body1"
+          sx={{
+            mb: 2,
+            color: 'white',
+            fontSize: isMobile ? '1rem' : '1.3rem',
+            fontFamily: 'Oswald, serif'
+          }}
+        >
+          {comment.content}
+        </Typography>
+        <ReplyButton onClick={() => handleReplyClick(index)} sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1.2rem', fontFamily: 'Oswald, serif' }}>
+          Ответить
+        </ReplyButton>
+        {replyingTo === index && (
+          <Box sx={{ mb: 2 }}>
+            <CommentForm 
+              isMobile={isMobile}
+              onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
+              onCancel={handleCancel}
+              nickname={nickname} 
+            />
+          </Box>
+        )}
+        {comment.replies && comment.replies.length > 0 && renderReplies(comment.replies)}
+      </CommentPaper>
+    ));
+  };
+
   return (
     <>
-      {localComments.map((comment, index) => (
-        <CommentPaper key={comment.id || index}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 2,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar 
-                src={comment.avatar} 
-                alt={comment.nickname} 
-                sx={{ width: isMobile ? 40 : 50, height: isMobile ? 40 : 50, mr: 1 }} 
-              />
-              <Typography
-                variant="subtitle2"
-                color="white"
-                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', fontFamily: 'Oswald, serif' }}
-              >
-                {comment.nickname}
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-              <Typography
-                variant="subtitle2"
-                color="white"
-                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mb: 1, fontFamily: 'Oswald, serif' }}
-              >
-                {formatDate(comment.date)}
-              </Typography>
-              {nickname === comment.nickname && (
-                <DeleteButton onClick={() => handleDelete(comment.id)}>
-                  Удалить
-                </DeleteButton>
-              )}
-            </Box>
-          </Box>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-              color: 'white',
-              fontSize: isMobile ? '1rem' : '1.3rem',
-              fontFamily: 'Oswald, serif'
-            }}
-          >
-            {comment.content}
-          </Typography>
-          {/* <ReplyButton onClick={() => handleReplyClick(index)} sx={{ mb: 2, fontSize: isMobile ? '0.75rem' : '1.2rem', fontFamily: 'Oswald, serif' }}>
-            Ответить
-          </ReplyButton> */}
-          {replyingTo === index && (
-            <Box sx={{ mb: 2 }}>
-              <CommentForm 
-                isMobile={isMobile}
-                onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
-                onCancel={handleCancel}
-                nickname={nickname} 
-              />
-            </Box>
-          )}
-          {renderReplies(comment.replies)}
-        </CommentPaper>
-      ))}
+      {renderComments(localComments)}
     </>
   );
 };
