@@ -10,7 +10,8 @@ import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import NewsContent from './NewsContent';
 import { getNewsItem, likeNewsItem } from '../../api/news';
-import { getComments, addComment } from '../../api/comments';
+import { addComment, getComments} from '../../api/comments';
+import { getProfile} from '../../api/profile';
 
 const NewsWrapper = styled(Box)(({ theme }) => ({
   backgroundColor: 'rgba(23, 54, 50, 0.65)',
@@ -44,6 +45,7 @@ const NewsDetail = ({ isAuthenticated }) => {
   const [showCommentField, setShowCommentField] = useState(false);
   const [like, setLike] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [nickname, setNickname] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const theme = useTheme();
@@ -58,15 +60,24 @@ const NewsDetail = ({ isAuthenticated }) => {
   }, []);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profileResponse = await getProfile();
+        setNickname(profileResponse.data.nickname);
+      } catch (error) {
+        console.error('Ошибка при получении профиля:', error);
+      }
+    };
+
     const fetchNewsItemAndComments = async () => {
       setLoading(true);
       setError(null);
-  
+
       try {
         const newsResponse = await getNewsItem(discipline, id);
         setNewsItem(newsResponse.data);
         setLikeCount(newsResponse.data.likeCount);
-  
+
         try {
           const commentsResponse = await getComments(id);
           const formattedComments = formatComments(commentsResponse.data);
@@ -78,13 +89,14 @@ const NewsDetail = ({ isAuthenticated }) => {
       } catch (error) {
         setError('Новость не найдена.');
       }
-  
+
       setLoading(false);
     };
-  
+
+    fetchProfile();
     fetchNewsItemAndComments();
   }, [discipline, id]);
-  
+
   const formatComments = (comments) => {
     const commentMap = {};
     comments.forEach((comment) => {
@@ -101,7 +113,6 @@ const NewsDetail = ({ isAuthenticated }) => {
     });
     return formattedComments;
   };
-  
 
   const handleLikeClick = async () => {
     setLike((prev) => !prev);
@@ -117,7 +128,8 @@ const NewsDetail = ({ isAuthenticated }) => {
 
   const handleCommentSubmit = async (newComment, parentId = null) => {
     try {
-      const response = await addComment(id, newComment, parentId);
+      const commentData = { ...newComment, nickname };
+      const response = await addComment(id, commentData, parentId);
       const updatedComments = [...comments];
       if (parentId) {
         const parentComment = updatedComments.find(comment => comment.id === parentId);
@@ -147,6 +159,7 @@ const NewsDetail = ({ isAuthenticated }) => {
       setShowCommentField(true);
     }
   };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -156,7 +169,7 @@ const NewsDetail = ({ isAuthenticated }) => {
       </Box>
     );
   }
-  
+
   if (error) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -164,97 +177,96 @@ const NewsDetail = ({ isAuthenticated }) => {
       </Box>
     );
   }
-  
 
   return (
-      <>
-        <Container maxWidth={false} sx={{ px: isMobile ? 2 : 4, maxWidth: isMobile ? '100%' : '1300px', marginTop: isMobile ? 10:15 }}>
-          <NewsWrapper>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h4" sx={{ color: 'white', textAlign: 'center', flex: 1, fontFamily: 'Oswald, serif' }}>{newsItem.title}</Typography>
+    <>
+      <Container maxWidth={false} sx={{ px: isMobile ? 2 : 4, maxWidth: isMobile ? '100%' : '1300px', marginTop: isMobile ? 10 : 15 }}>
+        <NewsWrapper>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h4" sx={{ color: 'white', textAlign: 'center', flex: 1, fontFamily: 'Oswald, serif' }}>{newsItem.title}</Typography>
+          </Box>
+          <Typography
+            variant="subtitle1"
+            color="textSecondary"
+            sx={{
+              mb: 6,
+              color: 'white',
+              textAlign: 'center',
+              fontSize: isMobile ? '1rem' : '2rem',
+              border: '1px solid rgb(0,142,130, 0.7)',
+              padding: '4px',
+              borderRadius: '40px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <IconButton onClick={() => navigate(previousPage)} sx={{ color: 'white' }}>
+              <ArrowCircleLeftOutlinedIcon fontSize="large" />
+            </IconButton>
+            <Box sx={{ fontSize: isMobile ? '1.2rem' : '2rem', fontFamily: 'Oswald, serif' }}>
+              {formatDate(newsItem.date)}
             </Box>
-            <Typography
-                variant="subtitle1"
-                color="textSecondary"
-                sx={{
-                  mb: 6,
-                  color: 'white',
-                  textAlign: 'center',
-                  fontSize: isMobile ? '1rem' : '2rem',
-                  border: '1px solid rgb(0,142,130, 0.7)',
-                  padding: '4px',
-                  borderRadius: '40px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-            >
-              <IconButton onClick={() => navigate(previousPage)} sx={{ color: 'white' }}>
-                <ArrowCircleLeftOutlinedIcon fontSize="large" />
-              </IconButton>
-              <Box sx={{ fontSize: isMobile ? '1.2rem' : '2rem', fontFamily: 'Oswald, serif' }}>
-                {formatDate(newsItem.date)}
-              </Box>
-              <LikeButtonWithCounter
-                  likeCount={likeCount}
-                  liked={like}
-                  onClick={handleLikeClick}
+            <LikeButtonWithCounter
+              likeCount={likeCount}
+              liked={like}
+              onClick={handleLikeClick}
+            />
+          </Typography>
+          <NewsContent newsItem={newsItem} isMobile={isMobile} />
+          <Box sx={{ mt: 6 }}>
+            <Typography variant="h5" sx={{
+              mb: 2,
+              color: 'white',
+              textAlign: 'center',
+              fontSize: isMobile ? '1.3rem' : '2rem',
+              border: '1px solid rgb(0,142,130, 0.7)',
+              padding: '4px',
+              borderRadius: '40px',
+              fontFamily: 'Oswald, serif'
+            }}>Комментарии</Typography>
+            {commentsError ? (
+              <Typography variant="h6" color="error">{commentsError}</Typography>
+            ) : (
+              <CommentList comments={comments} isMobile={isMobile} newsId={id} />
+            )}
+            {showCommentField ? (
+              <CommentForm
+                isMobile={isMobile}
+                onCommentSubmit={handleCommentSubmit}
+                onCancel={() => setShowCommentField(false)}
+                nickname={nickname} // Передаем nickname сюда
               />
-            </Typography>
-            <NewsContent newsItem={newsItem} isMobile={isMobile} />
-            <Box sx={{ mt: 6 }}>
-              <Typography variant="h5" sx={{
-                mb: 2,
-                color: 'white',
-                textAlign: 'center',
-                fontSize: isMobile ? '1.3rem' : '2rem',
-                border: '1px solid rgb(0,142,130, 0.7)',
-                padding: '4px',
-                borderRadius: '40px',
-                fontFamily: 'Oswald, serif'
-              }}>Комментарии</Typography>
-              {commentsError ? (
-                  <Typography variant="h6" color="error">{commentsError}</Typography>
-              ) : (
-                  <CommentList comments={comments} isMobile={isMobile} newsId={id} />
-              )}
-              {showCommentField ? (
-                  <CommentForm
-                      isMobile={isMobile}
-                      onCommentSubmit={handleCommentSubmit}
-                      onCancel={() => setShowCommentField(false)}
-                      username="YourUsername"
-                  />
-              ) : (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCommentButtonClick}
-                        sx={{
-                          backgroundColor: 'rgb(0,142,130, 0.5)',
-                          ':hover': {
-                            backgroundColor: '#008e82',
-                          },
-                          fontSize: isMobile ? '0.75rem' : '1rem',
-                          padding: isMobile ? '8px 16px' : '12px 24px',
-                          fontFamily: 'Oswald, serif'
-                        }}
-                    >
-                      Прокомментировать
-                    </Button>
-                  </Box>
-              )}
-            </Box>
-          </NewsWrapper>
-        </Container>
-        <Footer />
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-          <MuiAlert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-            Ошибка при добавлении комментария.
-          </MuiAlert>
-        </Snackbar>
-      </>
+            ) : (
+              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleCommentButtonClick}
+                  sx={{
+                    backgroundColor: 'rgb(0,142,130, 0.5)',
+                    ':hover': {
+                      backgroundColor: '#008e82',
+                    },
+                    fontSize: isMobile ? '0.75rem' : '1rem',
+                    padding: isMobile ? '8px 16px' : '12px 24px',
+                    fontFamily: 'Oswald, serif'
+                  }}
+                >
+                  Прокомментировать
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </NewsWrapper>
+      </Container>
+      <Footer />
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <MuiAlert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          Ошибка при добавлении комментария.
+        </MuiAlert>
+      </Snackbar>
+    </>
   );
 };
 

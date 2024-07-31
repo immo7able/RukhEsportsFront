@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Avatar, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CommentForm from './CommentForm';
-import { addComment, deleteComment } from '../../api/comments';
+import { addComment, deleteComment, getComments} from '../../api/comments';
+import { getProfile} from '../../api/profile';
 
 const CommentPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'rgba(23, 54, 50, 0.85)',
@@ -47,10 +48,34 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-GB', options).split('/').join('-');
 };
 
-const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) => {
+const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [localComments, setLocalComments] = useState(comments);
+  const [nickname, setNickname] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await getProfile();
+        setNickname(response.data.nickname);
+      } catch (error) {
+        console.error('Ошибка при получении профиля:', error);
+      }
+    }
+
+    async function fetchComments() {
+      try {
+        const response = await getComments(newsId);
+        setLocalComments(response.data);
+      } catch (error) {
+        console.error('Ошибка при загрузке комментариев:', error);
+      }
+    }
+
+    fetchProfile();
+    fetchComments();
+  }, [newsId]);
 
   const handleReplyClick = async (commentIndex) => {
     try {
@@ -73,8 +98,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
   const handleCommentSubmit = async (reply, commentIndex) => {
     try {
       const parentId = localComments[commentIndex].id;
-      console.log('Отправка данных на сервер:', { reply, parentId });
-      const response = await addComment(newsId, reply, parentId);
+      const response = await addComment(newsId, { ...reply, nickname }, parentId);
       const updatedComments = localComments.map((comment, idx) => {
         if (idx === commentIndex) {
           return {
@@ -94,6 +118,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
   const handleCancel = () => {
     setReplyingTo(null);
   };
+
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
@@ -105,6 +130,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
   };
 
   const renderReplies = (replies) => {
+    if (!replies) return null;
     return replies.map((reply, replyIndex) => (
       <ReplyPaper key={reply.id || `${reply.parent_comment_id}-${replyIndex}`} elevation={3}>
         <Box
@@ -118,7 +144,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Avatar 
               src={reply.avatar} 
-              alt={reply.username} 
+              alt={reply.nickname} 
               sx={{ width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, mr: 1 }} 
             />
             <Typography
@@ -126,7 +152,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
               color="white"
               sx={{ fontSize: isMobile ? '0.9rem' : '1.1rem', fontFamily: 'Oswald, serif' }}
             >
-              {reply.username}
+              {reply.nickname}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -154,7 +180,6 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
     ));
   };
 
-
   return (
     <>
       {localComments.map((comment, index) => (
@@ -170,7 +195,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Avatar 
                 src={comment.avatar} 
-                alt={comment.username} 
+                alt={comment.nickname} 
                 sx={{ width: isMobile ? 40 : 50, height: isMobile ? 40 : 50, mr: 1 }} 
               />
               <Typography
@@ -182,20 +207,19 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-  <Typography
-    variant="subtitle2"
-    color="white"
-    sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mb: 1, fontFamily: 'Oswald, serif' }}
-  >
-    {formatDate(comment.date)}
-  </Typography>
-  {comment.nickname === comment.nickname && (
-    <DeleteButton onClick={() => handleDelete(comment.id)}>
-      Удалить
-    </DeleteButton>
-  )}
-</Box>
-
+              <Typography
+                variant="subtitle2"
+                color="white"
+                sx={{ fontSize: isMobile ? '1rem' : '1.3rem', mb: 1, fontFamily: 'Oswald, serif' }}
+              >
+                {formatDate(comment.date)}
+              </Typography>
+              {nickname === comment.nickname && (
+                <DeleteButton onClick={() => handleDelete(comment.id)}>
+                  Удалить
+                </DeleteButton>
+              )}
+            </Box>
           </Box>
           <Typography
             variant="body1"
@@ -212,12 +236,12 @@ const CommentList = ({ comments, isMobile, isAuthenticated, username, newsId }) 
             Ответить
           </ReplyButton> */}
           {replyingTo === index && (
-            <Box sx={{mb: 2 }}> 
+            <Box sx={{ mb: 2 }}>
               <CommentForm 
                 isMobile={isMobile}
                 onCommentSubmit={(reply) => handleCommentSubmit(reply, index)}
                 onCancel={handleCancel}
-                username={username}
+                nickname={nickname} 
               />
             </Box>
           )}
