@@ -5,5 +5,5 @@ export const getAllNews = (discipline) => api.get(`news/${discipline}`);
 export const getNews = () => api.get(`news/`);
 
 export const likeNewsItem = (newsId, liked) => {
-    return api.post(`/api/news/${newsId}/like`, { liked });
+    return api.post(`/news/${newsId}/like`, { liked });
   };

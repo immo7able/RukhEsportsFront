@@ -70,6 +70,17 @@ const UpdateMatch = () => {
   }, [discipline]);
 
   useEffect(() => {
+    const fetchImage = async (imageUrl) => {
+      try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'image.jpg', { type: blob.type });
+        return file;
+      } catch (error) {
+        console.error('Ошибка при загрузке изображения:', error);
+        return null;
+      }
+    };
     if (selectedMatch) {
       const match = matches.find((item) => item.id === selectedMatch);
       if (match) {
@@ -80,6 +91,11 @@ const UpdateMatch = () => {
         setStatus(match.status);
         setYoutubeUrl(match.youtubeUrl);
         setDiscipline(match.tournament.discipline.toUpperCase());
+        fetchImage(match.img).then((file) => {
+          if (file) {
+            setImgUpl(file);
+          }
+        });
         setImg(match.img);
         setTournamentId(match.tournament.id);
         setTeam1Id(match.team1.id);
