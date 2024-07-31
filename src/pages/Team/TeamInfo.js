@@ -83,7 +83,7 @@ const TeamInfo = ({ team }) => {
                     {player.nickname}
                   </Typography>
                   <Typography variant="body2" sx={{ mt: 1, fontFamily: 'Oswald, serif', fontSize: isMobile ? '1.2rem' : '2rem' }}>
-                    {player.name}, {player.age}
+                    {player.name}, {player.content}
                   </Typography>
                   <Box sx={{ mt: 2 }}>
                     {player.socialMediaLinks && JSON.parse(player.socialMediaLinks).map((link, index) => (

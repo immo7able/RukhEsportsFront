@@ -57,7 +57,7 @@ const TournamentTable = ({ tournaments, from }) => {
                 {tournament.name}
               </Typography>
               <Typography variant="body2" sx={{ fontFamily: 'Oswald, serif', fontSize: isMobile ? '1.7rem' : '1.5rem' }}>
-                {tournament.prizepool}
+                {tournament.prizepool}₸
               </Typography>
             </CardContent>
           </Card>
