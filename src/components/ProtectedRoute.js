@@ -1,11 +1,18 @@
-
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const token = localStorage.getItem('token');
-  console.log('Токен в защищенном пути для проверки бэкдора:', token);
-  return token ? <Component {...rest} /> : <Navigate to="/login" />;
+const ProtectedRoute = ({ element: Component, isAuthenticated, isAdmin, requiresAdmin, ...rest }) => {
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated, 'isAdmin:', isAdmin);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (requiresAdmin && !isAdmin) {
+    return <Navigate to="/" />;
+  }
+
+  return <Component {...rest} />;
 };
 
 export default ProtectedRoute;

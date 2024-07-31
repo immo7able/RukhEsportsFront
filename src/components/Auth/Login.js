@@ -46,6 +46,7 @@ const Login = ({ setIsAuthenticated }) => {
       }
         setIsAuthenticated(true);
         navigate('/profile');
+        window.location.reload();
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         setError(error.response.data.error);

@@ -5,6 +5,7 @@ import { getProfile, updateEmail, updatePassword, updateNickname, uploadProfileI
 import { logout } from '../../api/auth';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
 
 const StyledContainer = styled(Box)(({ theme }) => ({
   backgroundImage: 'url(/blur.jpg)',
@@ -42,6 +43,10 @@ const Profile = () => {
   const [error, setError] = useState('');
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -50,6 +55,9 @@ const Profile = () => {
         setEmail(response.data.email);
         setNickname(response.data.nickname || '');
         setProfileImage(response.data.avatar || '');
+        if (response.data.role === 'admin') {
+          setIsAdmin(true);
+        }
       } catch (error) {
         if (error.response && error.response.status === 401) {
           localStorage.removeItem('token');
@@ -145,10 +153,13 @@ const Profile = () => {
     }
   };
 
+  const handleGoToAdminPanel = () => {
+    navigate('/admin');
+  };
+
   return (
     <StyledContainer>
       <FormBox>
-
         {error && <Typography color="rgb(220, 20, 60)" variant="h6">{error}</Typography>}
         <Box display="flex" alignItems="center" marginBottom={2}>
           <Button
@@ -202,6 +213,25 @@ const Profile = () => {
               }}
             />
           </Button>
+          {isAdmin && (
+  <Button
+    variant="contained"
+    sx={{
+      backgroundColor: '#008e82',
+      borderRadius: '30px',
+      color: '#fff',
+      width: 90,
+      height: 50,
+      minWidth: 'auto',
+      '&:hover': { backgroundColor: '#006f69' },
+      marginLeft: 4,
+    }}
+    onClick={handleGoToAdminPanel}
+  >
+    Админка
+  </Button>
+)}
+
         </Box>
 
         <TextField
