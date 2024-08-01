@@ -7,6 +7,8 @@ import TournamentManagement from './tournaments/TournamentManagement';
 import TeamManagement from './team/TeamManagement';
 import CoverManagement from './CoverManagement';
 import CarouselManagement from './CarouselManagement';
+import Comments from './news/Comments';
+
 
 const AdminPanel = () => {
   const [value, setValue] = React.useState(0);
@@ -77,29 +79,33 @@ const AdminPanel = () => {
           }}
         >
           <Tab sx={tabStyle} label="Новости" />
-          <Tab sx={tabStyle} label="Матчи" />
-          <Tab sx={tabStyle} label="Турниры" />
+          <Tab sx={tabStyle} label="Комментарии" />
           <Tab sx={tabStyle} label="Команды и игроки" />
+          <Tab sx={tabStyle} label="Турниры" />
+          <Tab sx={tabStyle} label="Матчи" />
           <Tab sx={tabStyle} label="Обложки" />
-          <Tab sx={tabStyle} label="Карусель главная страница" />
+          <Tab sx={tabStyle} label="Карусель главная" />
         </Tabs>
         <Box sx={{ width: '100%' }}>
           <TabPanel value={value} index={0}>
             <NewsManagement />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <MatchManagement />
+            <Comments />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <TournamentManagement />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
             <TeamManagement />
           </TabPanel>
+          <TabPanel value={value} index={3}>
+            <TournamentManagement />
+          </TabPanel>
           <TabPanel value={value} index={4}>
-            <CoverManagement />
+            <MatchManagement />
           </TabPanel>
           <TabPanel value={value} index={5}>
+            <CoverManagement />
+          </TabPanel>
+          <TabPanel value={value} index={6}>
             <CarouselManagement />
           </TabPanel>
         </Box>
