@@ -265,7 +265,7 @@ const Profile = () => {
           margin="normal"
           fullWidth
           id="password"
-          label="Пароль"
+          label="Введите новый пароль"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -292,7 +292,7 @@ const Profile = () => {
           margin="normal"
           fullWidth
           id="nickname"
-          label="Никнейм"
+          label="Введите никнейм"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           InputLabelProps={{ style: { color: '#008e82' } }}
