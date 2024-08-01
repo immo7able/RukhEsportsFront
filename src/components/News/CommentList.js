@@ -136,12 +136,21 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(commentId);
-      const updatedComments = localComments.filter(comment => comment.id !== commentId);
+      const updatedComments = localComments.filter(comment => {
+        if (comment.id === commentId) {
+          return false;
+        }
+        if (comment.replies) {
+          comment.replies = comment.replies.filter(reply => reply.id !== commentId);
+        }
+        return true;
+      });
       setLocalComments(updatedComments);
     } catch (error) {
       console.error('Ошибка при удалении комментария:', error);
     }
   };
+  
 
   const renderReplies = (replies) => {
     if (!replies) return null;
@@ -178,6 +187,11 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
             >
               {formatDate(reply.date)}
             </Typography>
+            {nickname === reply.nickname && (
+            <DeleteButton onClick={() => handleDelete(reply.id)}>
+              Удалить
+            </DeleteButton>
+          )}
           </Box>
         </Box>
         <Typography
