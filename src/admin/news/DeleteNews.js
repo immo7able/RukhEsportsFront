@@ -7,6 +7,7 @@ const DeleteNews = () => {
   const [id, setId] = useState('');
   const [newsItems, setNewsItems] = useState([]);
   const [selectedNews, setSelectedNews] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchNewsItems = async () => {
@@ -32,14 +33,26 @@ const DeleteNews = () => {
   const handleSubmit = async () => {
     try {
       await api.delete(`/admin/deleteNews/${id}`);
-      alert('Новость удалена успешно! Нажмите на пустое пространство чтобы закрыть окно');
+      alert('Новость удалена успешно!');
     } catch (error) {
       alert('Ошибка при удалении новости!');
     }
   };
 
+  const filteredNews = newsItems.filter(newsItem =>
+    newsItem.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Box sx={{ position: 'relative', p: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', my: '20%', width: '80%', maxWidth: '500px' }}>
+      <TextField
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Поиск по новостям"
+        variant="outlined"
+        fullWidth
+        sx={{ mb: 2 }}
+      />
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="news-select-label">Выбрать новость</InputLabel>
         <Select
@@ -48,7 +61,7 @@ const DeleteNews = () => {
           label="Выбрать новость"
           onChange={(e) => setSelectedNews(e.target.value)}
         >
-          {newsItems.map((news) => (
+          {filteredNews.map((news) => (
             <MenuItem key={news.id} value={news.id}>
               {news.title}
             </MenuItem>

@@ -8,6 +8,8 @@ import TeamManagement from './team/TeamManagement';
 import CoverManagement from './CoverManagement';
 import CarouselManagement from './CarouselManagement';
 import Comments from './news/Comments';
+import NotesManagement from './NotesManagement';
+
 
 
 const AdminPanel = () => {
@@ -85,6 +87,7 @@ const AdminPanel = () => {
           <Tab sx={tabStyle} label="Матчи" />
           <Tab sx={tabStyle} label="Обложки" />
           <Tab sx={tabStyle} label="Карусель главная" />
+          <Tab sx={tabStyle} label="Памятка использования" />
         </Tabs>
         <Box sx={{ width: '100%' }}>
           <TabPanel value={value} index={0}>
@@ -107,6 +110,9 @@ const AdminPanel = () => {
           </TabPanel>
           <TabPanel value={value} index={6}>
             <CarouselManagement />
+          </TabPanel>
+          <TabPanel value={value} index={7}>
+            <NotesManagement />
           </TabPanel>
         </Box>
       </Box>

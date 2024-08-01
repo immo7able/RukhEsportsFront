@@ -126,7 +126,7 @@ const CreateNews = () => {
           <MenuItem value="MOB" sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
         </Select>
       </FormControl>
-      <FormControl fullWidth sx={{ width: '100%', justifyContent: 'space-between', mb: 2 }}>
+      {/* <FormControl fullWidth sx={{ width: '100%', justifyContent: 'space-between', mb: 2 }}>
         <InputLabel id="tournament-label" sx={{ fontSize: '1.5rem' }}>Турнир (необязательно)</InputLabel>
         <Select
           labelId="tournament-label"
@@ -148,7 +148,7 @@ const CreateNews = () => {
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </FormControl> */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Button
           variant="contained"

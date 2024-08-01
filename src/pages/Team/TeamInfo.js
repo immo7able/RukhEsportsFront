@@ -45,7 +45,9 @@ const TeamInfo = ({ team }) => {
   };
 
   const renderIcon = (url) => {
-    if (url.includes('facebook.com')) {
+    if (!url) {
+      return null;
+    } else if (url.includes('facebook.com')) {
       return <FaFacebook />;
     } else if (url.includes('youtube.com')) {
       return <FaYoutube />;
@@ -57,6 +59,7 @@ const TeamInfo = ({ team }) => {
       return <CgWebsite />;
     }
   };
+  
 
   return (
     <Box>

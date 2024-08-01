@@ -57,14 +57,35 @@ const CreateTeam = () => {
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
     } catch (error) {
-      setSnackbarMessage('Ошибка при создании команды! Проверьте загружено ли изображение и заполненность полей');
+      setSnackbarMessage('Ошибка при создании команды! Проверьте существует ли уже подобная команда и загружено ли изображение, заполненность полей');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
     }
   };
 
   return (
-<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>      <TextField
+<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>      
+<FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="rukhTeam-label" sx={{ fontSize: '1.5rem' }}>Rukh Team</InputLabel>
+        <Select
+          labelId="rukhTeam-label"
+          value={rukhTeam}
+          onChange={(e) => setRukhTeam(e.target.value)}
+          label="Rukh Team"
+          sx={{ fontSize: '1.5rem' }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                fontSize: '1.5rem',
+              },
+            },
+          }}
+        >
+          <MenuItem value={false} sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
+          <MenuItem value={true} sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
+        </Select>
+      </FormControl>
+  <TextField
         label="Название"
         fullWidth
         value={name}
@@ -73,7 +94,7 @@ const CreateTeam = () => {
         InputLabelProps={{ style: { fontSize: '1.5rem' } }}
         InputProps={{ style: { fontSize: '1.5rem' } }}
       />
-      <TextField
+      {/* <TextField
         label="Контент"
         fullWidth
         multiline
@@ -83,7 +104,7 @@ const CreateTeam = () => {
         sx={{ mb: 2 }}
         InputLabelProps={{ style: { fontSize: '1.5rem' } }}
         InputProps={{ style: { fontSize: '1.5rem' } }}
-      />
+      /> */}
       
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
@@ -104,27 +125,6 @@ const CreateTeam = () => {
           <MenuItem value="PUBG" sx={{ fontSize: '1.5rem' }}>PUBG</MenuItem>
           <MenuItem value="HOK" sx={{ fontSize: '1.5rem' }}>HOK</MenuItem>
           <MenuItem value="MOB" sx={{ fontSize: '1.5rem' }}>MOB</MenuItem>
-        </Select>
-      </FormControl>
-      
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id="rukhTeam-label" sx={{ fontSize: '1.5rem' }}>Rukh Team</InputLabel>
-        <Select
-          labelId="rukhTeam-label"
-          value={rukhTeam}
-          onChange={(e) => setRukhTeam(e.target.value)}
-          label="Rukh Team"
-          sx={{ fontSize: '1.5rem' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                fontSize: '1.5rem',
-              },
-            },
-          }}
-        >
-          <MenuItem value={false} sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
-          <MenuItem value={true} sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
         </Select>
       </FormControl>
       

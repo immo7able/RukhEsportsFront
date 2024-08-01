@@ -132,7 +132,7 @@ const UpdateNews = () => {
         <Select
           labelId="news-select-label"
           value={selectedNews}
-          label="Выбрать новость"
+          label="Выбрать новость из общего списка"
           onChange={(e) => setSelectedNews(e.target.value)}
           sx={{ fontSize: '1.5rem' }}
           MenuProps={{

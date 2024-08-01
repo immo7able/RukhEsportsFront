@@ -13,7 +13,8 @@ const CreatePlayer = () => {
   const [imgUpl, setImgUpl] = useState(null);
   const [teamId, setTeamId] = useState('');
   const [teams, setTeams] = useState([]);
-  const [discipline] = useState('');
+  const [discipline, setDiscipline] = useState('');
+  const [rukhTeam, setRukhTeam] = useState(false); // Добавлено состояние rukhTeam
 
   const [socialMediaLinks, setSocialMediaLinks] = useState([{ platform: '', url: '' }]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -24,14 +25,20 @@ const CreatePlayer = () => {
     const fetchTeams = async () => {
       try {
         const response = await getTeams(discipline);
-        setTeams(response.data);
+        console.log('Полученные данные команд:', response.data); // Отладочная информация
+
+        // Фильтрация команд по полю 'rukh'
+        const filteredTeams = response.data.filter(team => team.rukh === rukhTeam);
+        console.log('Отфильтрованные команды:', filteredTeams); // Отладочная информация
+
+        setTeams(filteredTeams);
       } catch (error) {
         console.error('Ошибка при загрузке команд:', error);
       }
     };
 
     fetchTeams();
-  }, []);
+  }, [discipline, rukhTeam]); // Добавлено rukhTeam в зависимости
 
   const handleSocialMediaChange = (index, field, value) => {
     const updatedLinks = socialMediaLinks.map((link, i) => (
@@ -100,8 +107,53 @@ const CreatePlayer = () => {
   };
 
   return (
-<Box sx={{ position: 'relative', p: 4,mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
-<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+    <Box sx={{ position: 'relative', p: 4, mt: 4, bgcolor: 'background.paper', borderRadius: 1, mx: 'auto', width: '80%', maxWidth: '900px', maxHeight: '700px', overflow: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <FormControl fullWidth sx={{ mb: 2, width: '48%' }}>
+        <InputLabel id="rukhTeam-label" sx={{ fontSize: '1.5rem' }}>Rukh Team</InputLabel>
+        <Select
+          labelId="rukhTeam-label"
+          value={rukhTeam}
+          onChange={(e) => setRukhTeam(e.target.value)}
+          label="Rukh Team"
+          sx={{ fontSize: '1.5rem' }}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                fontSize: '1.5rem',
+              },
+            },
+          }}
+        >
+          <MenuItem value={false} sx={{ fontSize: '1.5rem' }}>Нет</MenuItem>
+          <MenuItem value={true} sx={{ fontSize: '1.5rem' }}>Да</MenuItem>
+        </Select>
+      </FormControl>
+        <FormControl fullWidth sx={{ mb: 2, width: '48%' }}>
+          <InputLabel id="team-select-label" sx={{ fontSize: '1.5rem' }}>Команда</InputLabel>
+          <Select
+            labelId="team-select-label"
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            label="Команда"
+            sx={{ fontSize: '1.5rem' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  fontSize: '1.5rem',
+                },
+              },
+            }}
+          >
+            {teams.map((team) => (
+              <MenuItem key={team.id} value={team.id}>
+                {team.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <TextField
           label="Никнейм"
           fullWidth
@@ -133,65 +185,52 @@ const CreatePlayer = () => {
         InputProps={{ style: { fontSize: '1.5rem' } }}
         sx={{ mb: 2 }}
       />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <FormControl fullWidth sx={{ mb: 2, width: '48%' }}>
-          <InputLabel id="team-select-label" sx={{ fontSize: '1.5rem' }}>Команда</InputLabel>
+
+      
+
+      
+      <Box>
+  {socialMediaLinks.map((link, index) => (
+    rukhTeam && (
+      <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <FormControl sx={{ mr: 2, width: '30%' }}>
+          <InputLabel id={`platform-label-${index}`} sx={{ fontSize: '1.5rem' }}>Платформа</InputLabel>
           <Select
-            labelId="team-select-label"
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}
-            label="Команда"
+            labelId={`platform-label-${index}`}
+            value={link.platform}
+            onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
+            label="Платформа"
             sx={{ fontSize: '1.5rem' }}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  fontSize: '1.5rem',
-                },
-              },
-            }}
           >
-            {teams.map((team) => (
-              <MenuItem key={team.id} value={team.id}>
-                {team.name}
-              </MenuItem>
-            ))}
+            <MenuItem value="YouTube" sx={{ fontSize: '1.5rem' }}>YouTube</MenuItem>
+            <MenuItem value="Instagram" sx={{ fontSize: '1.5rem' }}>Instagram</MenuItem>
+            <MenuItem value="Twitch" sx={{ fontSize: '1.5rem' }}>Twitch</MenuItem>
+            <MenuItem value="Facebook" sx={{ fontSize: '1.5rem' }}>Facebook</MenuItem>
+            <MenuItem value="Other" sx={{ fontSize: '1.5rem' }}>Другое</MenuItem>
           </Select>
         </FormControl>
-
-        <Button onClick={handleAddSocialMedia} startIcon={<AddIcon />} sx={{ border: 1, width: '48%' }}>Добавить соцсеть</Button>
+        <TextField
+          label="URL"
+          value={link.url}
+          onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
+          sx={{ flex: 1 }}
+          InputLabelProps={{ style: { fontSize: '1.5rem' } }}
+          InputProps={{ style: { fontSize: '1.5rem' } }}
+        />
+        <IconButton onClick={() => handleRemoveSocialMedia(index)} sx={{ ml: 2 }}>
+          <RemoveIcon />
+        </IconButton>
       </Box>
+    )
+  ))}
+  {rukhTeam && (
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Button onClick={handleAddSocialMedia} startIcon={<AddIcon />} sx={{ border: 1, width: '100%' }}>Добавить соцсеть</Button>
+    </Box>
+  )}
+</Box>
 
-      {socialMediaLinks.map((link, index) => (
-        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <FormControl sx={{ mr: 2, width: '30%' }}>
-            <InputLabel id={`platform-label-${index}`} sx={{ fontSize: '1.5rem' }}>Платформа</InputLabel>
-            <Select
-              labelId={`platform-label-${index}`}
-              value={link.platform}
-              onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
-              label="Платформа"
-              sx={{ fontSize: '1.5rem' }}
-            >
-              <MenuItem value="YouTube" sx={{ fontSize: '1.5rem' }}>YouTube</MenuItem>
-              <MenuItem value="Instagram" sx={{ fontSize: '1.5rem' }}>Instagram</MenuItem>
-              <MenuItem value="Twitch" sx={{ fontSize: '1.5rem' }}>Twitch</MenuItem>
-              <MenuItem value="Facebook" sx={{ fontSize: '1.5rem' }}>Facebook</MenuItem>
-              <MenuItem value="Other" sx={{ fontSize: '1.5rem' }}>Другое</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            label="URL"
-            value={link.url}
-            onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
-            sx={{ flex: 1 }}
-            InputLabelProps={{ style: { fontSize: '1.5rem' } }}
-            InputProps={{ style: { fontSize: '1.5rem' } }}
-          />
-          <IconButton onClick={() => handleRemoveSocialMedia(index)} sx={{ ml: 2 }}>
-            <RemoveIcon />
-          </IconButton>
-        </Box>
-      ))}
+
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Button

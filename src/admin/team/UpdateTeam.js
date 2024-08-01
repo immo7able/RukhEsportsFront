@@ -153,7 +153,7 @@ const UpdateTeam = () => {
         InputLabelProps={{ style: { fontSize: '1.5rem' } }}
         InputProps={{ style: { fontSize: '1.5rem' } }}
       />
-      <TextField
+      {/* <TextField
         label="Контент"
         fullWidth
         multiline
@@ -163,7 +163,7 @@ const UpdateTeam = () => {
         sx={{ mb: 2 }}
         InputLabelProps={{ style: { fontSize: '1.5rem' } }}
         InputProps={{ style: { fontSize: '1.5rem' } }}
-      />
+      /> */}
       
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="discipline-label" sx={{ fontSize: '1.5rem' }}>Дисциплина</InputLabel>
