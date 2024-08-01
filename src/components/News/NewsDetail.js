@@ -9,7 +9,7 @@ import LikeButtonWithCounter from './LikeButtonWithCounter';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import NewsContent from './NewsContent';
-import { getNewsItem, likeNewsItem } from '../../api/news';
+import { getNewsItem, likeNewsItem, isLiked } from '../../api/news';
 import { addComment, getComments} from '../../api/comments';
 import { getProfile} from '../../api/profile';
 
@@ -77,6 +77,8 @@ const NewsDetail = ({ isAuthenticated }) => {
         const newsResponse = await getNewsItem(discipline, id);
         setNewsItem(newsResponse.data);
         setLikeCount(newsResponse.data.likeCount);
+        const likeResponse = await isLiked(id);
+        setLike(likeResponse.data);
 
         try {
           const commentsResponse = await getComments(id);
