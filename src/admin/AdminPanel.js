@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Tabs, Tab, Box, Typography, useMediaQuery, Grid } from '@mui/material';
+import { Container, Tabs, Tab, Box, Typography, useMediaQuery} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NewsManagement from './news/NewsManagement';
 import MatchManagement from './matches/MatchManagement';

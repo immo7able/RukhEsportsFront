@@ -9,20 +9,20 @@ const CarouselManagement = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const imgUrl = await getSliderImage();
-        if (imgUrl && imgUrl.data && imgUrl.data.img) {
-          setCurrentImage(imgUrl.data.img);
-        } else {
-          console.error('Image data is not available:', imgUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching image:', error);
+  const fetchImage = async () => {
+    try {
+      const imgUrl = await getSliderImage();
+      if (imgUrl && imgUrl.data && imgUrl.data.img) {
+        setCurrentImage(imgUrl.data.img);
+      } else {
+        console.error('Image data is not available:', imgUrl);
       }
-    };
-  
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchImage();
   }, []);
 
@@ -49,6 +49,8 @@ const CarouselManagement = () => {
         setSnackbarSeverity('success');
         setOpenSnackbar(true);
         console.log('Ответ сервера:', response);
+
+        fetchImage();
       } catch (error) {
         console.error('Ошибка при загрузке обложки карусели!', error);
         setSnackbarMessage(`Ошибка при загрузке обложки карусели! Сообщение: ${error.message}`);
@@ -94,6 +96,14 @@ const CarouselManagement = () => {
           <Typography variant="body2">Обложка отсутствует</Typography>
         )}
       </Box>
+      <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
       <Button
         variant="outlined"
         component="label"
@@ -103,7 +113,6 @@ const CarouselManagement = () => {
           borderRadius: 2,
           textTransform: 'none',
           fontWeight: 'bold',
-          mb: 2,
           '&:hover': {
             borderColor: '#FFFFFF',
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -134,8 +143,9 @@ const CarouselManagement = () => {
           },
         }}
       >
-        Загрузить новую обложку карусели
+        Загрузить новую обложку
       </Button>
+    </Box>
 
       
     </Box>

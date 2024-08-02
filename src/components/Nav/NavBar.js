@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  AppBar, Toolbar, Typography, IconButton, Drawer, Box, useMediaQuery
+  AppBar, Toolbar, Typography, IconButton, Drawer, Box, useMediaQuery, Avatar
 } from '@mui/material';
 import { styled, useTheme } from '@mui/system';
 import {
@@ -13,6 +13,8 @@ import MenuList from './MenuList';
 import logo from '../../images/logo.PNG';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { getProfile} from '../../api/profile';
+
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -27,6 +29,8 @@ const NavBar = ({ isAuthenticated }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState('');
+
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -36,7 +40,7 @@ const NavBar = ({ isAuthenticated }) => {
   };
 
   const handleAccountClick = () => {
-    navigate(isAuthenticated ? '/profile' : '/signup');
+    navigate(isAuthenticated ? '/profile' : '/login');
     setDrawerOpen(false);
   };
 
@@ -44,6 +48,19 @@ const NavBar = ({ isAuthenticated }) => {
     navigate(path);
     setDrawerOpen(false);
   };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        setProfileImage(response.data.avatar || '');
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+  
+    fetchProfile();
+  }, []);
 
   const menuItems = [
     { text: 'Главная', path: '/' },
@@ -76,9 +93,13 @@ const NavBar = ({ isAuthenticated }) => {
           <img src={logo} alt="RUKH Esports" style={{ height: 50, marginLeft: '35px' }} />
         </Typography>
         <Box>
-          <IconButton color="inherit" onClick={handleAccountClick}>
-            <AccountCircle sx={{ fontSize: '35px !important', color: 'rgb(0,142,130, 0.8)' }} />
-          </IconButton>
+        <IconButton color="inherit" onClick={handleAccountClick}>
+      {profileImage ? (
+        <Avatar src={profileImage} sx={{ width: 35, height: 35 }} />
+      ) : (
+        <AccountCircle sx={{ fontSize: '35px !important', color: 'rgb(0,142,130, 0.8)' }} />
+      )}
+    </IconButton>
         </Box>
       </Box>
       <MenuList menuItems={menuItems} handleMenuItemClick={handleMenuItemClick} />

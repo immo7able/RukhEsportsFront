@@ -307,6 +307,9 @@ const UpdatePlayer = () => {
             onChange={(e) => setNickname(e.target.value)}
             sx={{
               width: '48%',
+              '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -327,6 +330,9 @@ const UpdatePlayer = () => {
             onChange={(e) => setName(e.target.value)}
             sx={{
               width: '48%',
+              '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -350,6 +356,9 @@ const UpdatePlayer = () => {
           onChange={(e) => setContent(e.target.value)}
           sx={{
             mb: 2,
+            '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
               borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -363,42 +372,61 @@ const UpdatePlayer = () => {
           InputLabelProps={{ style: { fontSize: '1.5rem' } }}
           InputProps={{ style: { fontSize: '1.5rem' } }}
         />
-        <Box>
+         <Box>
           {socialMediaLinks.map((link, index) => (
             rukhTeam && (
               <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <FormControl sx={{ mr: 2, width: '30%' }}>
-                  <InputLabel id={`platform-label-${index}`} sx={{ fontSize: '1.5rem' }}>Платформа</InputLabel>
-                  <Select
-                    labelId={`platform-label-${index}`}
-                    value={link.platform}
-                    onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
-                    label="Платформа"
-                    sx={{ fontSize: '1.5rem' }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          fontSize: '1.5rem',
-                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                          backdropFilter: 'blur(10px)',
-                          color: '#FFFFFF',
-                        },
-                      },
-                    }}
-                  >
-                    <MenuItem value="YouTube" sx={{ fontSize: '1.5rem' }}>YouTube</MenuItem>
-                    <MenuItem value="Instagram" sx={{ fontSize: '1.5rem' }}>Instagram</MenuItem>
-                    <MenuItem value="Twitch" sx={{ fontSize: '1.5rem' }}>Twitch</MenuItem>
-                    <MenuItem value="Facebook" sx={{ fontSize: '1.5rem' }}>Facebook</MenuItem>
-                    <MenuItem value="Other" sx={{ fontSize: '1.5rem' }}>Другое</MenuItem>
-                  </Select>
-                </FormControl>
+                <FormControl
+  sx={{
+    mr: 2,
+    width: '30%',
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 2,
+      borderColor: 'rgba(255, 255, 255, 0.5)',
+      '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)' },
+      '&:hover fieldset': { borderColor: '#FFFFFF' },
+      '&.Mui-focused fieldset': { borderColor: '#FFFFFF' },
+      '& .MuiInputBase-input': { color: '#FFFFFF' },
+    },
+    '& .MuiInputLabel-root': { color: '#FFFFFF', fontSize: '1.5rem' },
+    '& .MuiSvgIcon-root': { color: '#FFFFFF' },
+  }}
+>
+  <InputLabel id={`platform-label-${index}`} sx={{ fontSize: '1.5rem' }}>Платформа</InputLabel>
+  <Select
+    labelId={`platform-label-${index}`}
+    value={link.platform}
+    onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
+    label="Платформа"
+    sx={{ fontSize: '1.5rem' }}
+    MenuProps={{
+      PaperProps: {
+        style: {
+          fontSize: '1.5rem',
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
+          color: '#FFFFFF',
+        },
+      },
+    }}
+  >
+    <MenuItem value="YouTube" sx={{ fontSize: '1.5rem' }}>YouTube</MenuItem>
+    <MenuItem value="Instagram" sx={{ fontSize: '1.5rem' }}>Instagram</MenuItem>
+    <MenuItem value="Twitch" sx={{ fontSize: '1.5rem' }}>Twitch</MenuItem>
+    <MenuItem value="Facebook" sx={{ fontSize: '1.5rem' }}>Facebook</MenuItem>
+    <MenuItem value="Other" sx={{ fontSize: '1.5rem' }}>Другое</MenuItem>
+  </Select>
+</FormControl>
+
                 <TextField
                   label="URL"
                   value={link.url}
                   onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
                   sx={{
                     flex: 1,
+                    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       borderColor: 'rgba(255, 255, 255, 0.5)',

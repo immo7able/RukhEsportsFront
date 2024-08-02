@@ -117,6 +117,9 @@ const UpdateNews = () => {
           maxHeight: '700px',
         }}
       >
+         <Typography variant="h6" gutterBottom sx={{ mb: 4 }}>
+        Обновление новости
+      </Typography>
         <TextField
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

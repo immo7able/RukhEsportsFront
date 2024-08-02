@@ -73,9 +73,9 @@ const TournamentDetail = ({ isAuthenticated }) => {
           }
         });
         setTournament(updatedTournament);
-        console.log(updatedTournament);
+        // console.log(updatedTournament);
         setMatches(matchesData.data);
-        console.log(matchesData.data);
+        // console.log(matchesData.data);
 
       } catch (error) {
         setError(error.message || 'Ошибка при загрузке данных.');

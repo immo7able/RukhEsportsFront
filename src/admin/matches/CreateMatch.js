@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert, Typography } from '@mui/material';
 import api from '../../api/api';
 import { getTournaments } from '../../api/tournaments';
 import { getTeams } from '../../api/team';
@@ -134,6 +134,9 @@ const CreateMatch = () => {
         maxHeight: '700px',
       }}
     >
+       <Typography variant="h6" gutterBottom sx={{ mb: 4 }}>
+        Создание матча
+      </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, width: '100%' }}>
         <FormControl fullWidth sx={{
           width: '48%',

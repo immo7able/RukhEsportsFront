@@ -213,6 +213,9 @@ const CreatePlayer = () => {
             onChange={(e) => setNickname(e.target.value)}
             sx={{
               width: '48%',
+              '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -233,6 +236,9 @@ const CreatePlayer = () => {
             onChange={(e) => setName(e.target.value)}
             sx={{
               width: '48%',
+              '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
                 borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -256,6 +262,9 @@ const CreatePlayer = () => {
           onChange={(e) => setContent(e.target.value)}
           sx={{
             mb: 2,
+            '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
               borderColor: 'rgba(255, 255, 255, 0.5)',
@@ -321,6 +330,9 @@ const CreatePlayer = () => {
                   onChange={(e) => handleSocialMediaChange(index, 'url', e.target.value)}
                   sx={{
                     flex: 1,
+                    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
                       borderColor: 'rgba(255, 255, 255, 0.5)',

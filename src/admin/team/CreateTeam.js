@@ -82,6 +82,9 @@ const CreateTeam = () => {
           maxHeight: '700px',
         }}
       >
+         <Typography variant="h6" gutterBottom sx={{ mb: 4 }}>
+        Создание команды
+      </Typography>
         <FormControl fullWidth sx={{
           mb: 2,
           '& .MuiOutlinedInput-root': {
@@ -127,6 +130,9 @@ const CreateTeam = () => {
           onChange={(e) => setName(e.target.value)}
           sx={{
             mb: 2,
+            '& .MuiInputLabel-root.Mui-focused': {
+      color: '#FFFFFF',
+    },
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
               borderColor: 'rgba(255, 255, 255, 0.5)',

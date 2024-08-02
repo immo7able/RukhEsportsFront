@@ -131,6 +131,14 @@ const Login = ({ setIsAuthenticated }) => {
             >
               Войти
             </Button>
+            <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
             <Button
               fullWidth
               variant="text"
@@ -145,8 +153,9 @@ const Login = ({ setIsAuthenticated }) => {
               sx={{ mt: 1, mb: 2, color: '#008e82' }}
               onClick={() => navigate('/signup')}
             >
-              Вернуться к регистрации
+              регистрация
             </Button>
+            </Box>
           </Box>
         </FormBox>
       </Box>

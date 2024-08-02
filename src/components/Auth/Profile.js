@@ -131,7 +131,7 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      window.location.href = '/login';
+      window.location.href = '/';
     } catch (error) {
       setError('Ошибка при выходе');
     }

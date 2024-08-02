@@ -173,6 +173,21 @@ const Comments = () => {
             '&:hover fieldset': { borderColor: 'white' },
             '&.Mui-focused fieldset': { borderColor: 'white' },
           },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(255, 255, 255, 0.5)',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#FFFFFF',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#FFFFFF',
+          },
+          '& .MuiSelect-icon': {
+            color: '#FFFFFF',
+          },
+          '& .MuiSelect-select': {
+            color: '#FFFFFF',
+          },
         }}
         MenuProps={{
           PaperProps: {

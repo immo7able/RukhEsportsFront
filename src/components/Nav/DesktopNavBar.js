@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IconButton, Typography, Box } from '@mui/material';
+import { IconButton, Typography, Box, Avatar } from '@mui/material';
 import { styled, useTheme } from '@mui/system';
-import LogoCarousel from './LogoCarousel';
+import { getProfile} from '../../api/profile';
+
+// import LogoCarousel from './LogoCarousel';
 
 import {
   Search as SearchIcon, AccountCircle,
@@ -19,6 +21,20 @@ const MenuItemBox = styled(Box)(({ theme }) => ({
 
 const DesktopNavBar = ({ menuItems, handleAccountClick }) => {
   const theme = useTheme();
+  const [profileImage, setProfileImage] = useState('');
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        setProfileImage(response.data.avatar || '');
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+  
+    fetchProfile();
+  }, []);
 
   return (
     <>
@@ -41,9 +57,13 @@ const DesktopNavBar = ({ menuItems, handleAccountClick }) => {
       </Box>
       
       <div>
-        <IconButton color="inherit" onClick={handleAccountClick}>
-          <AccountCircle sx={{ fontSize: '30px !important', color: '#008e82' }} />
-        </IconButton>
+      <IconButton color="inherit" onClick={handleAccountClick}>
+      {profileImage ? (
+        <Avatar src={profileImage} sx={{ width: 35, height: 35 }} />
+      ) : (
+        <AccountCircle sx={{ fontSize: '35px !important', color: 'rgb(0,142,130, 0.8)' }} />
+      )}
+    </IconButton>
       </div>
     </>
   );

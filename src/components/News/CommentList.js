@@ -60,9 +60,9 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
       try {
         const response = await getProfile();
         setNickname(response.data.nickname);
-        console.log('Profile fetched:', response.data);
+        // console.log('Profile fetched:', response.data);
       } catch (error) {
-        console.error('Ошибка при получении профиля:', error);
+        // console.error('Ошибка при получении профиля:', error);
       }
     }
 
@@ -70,7 +70,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
       try {
         const response = await getComments(newsId);
         setLocalComments(response.data);
-        console.log('Comments fetched:', response.data);
+        // console.log('Comments fetched:', response.data);
       } catch (error) {
         console.error('Ошибка при загрузке комментариев:', error);
       }
@@ -89,7 +89,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
       }
 
       setReplyingTo(commentIndex);
-      console.log(`Replying to comment index: ${commentIndex}`);
+      // console.log(`Replying to comment index: ${commentIndex}`);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         console.error(error.response.data.error);
@@ -120,7 +120,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
         }
         return comment;
       });
-      console.log('Updated comments after adding reply:', updatedComments);
+      // console.log('Updated comments after adding reply:', updatedComments);
 
       setLocalComments(updatedComments);
       setReplyingTo(null);
@@ -154,7 +154,7 @@ const CommentList = ({ comments, isMobile, isAuthenticated, newsId }) => {
 
   const renderReplies = (replies) => {
     if (!replies) return null;
-    console.log('Rendering replies:', replies);
+    // console.log('Rendering replies:', replies);
     return replies.map((reply, replyIndex) => (
       <ReplyPaper key={reply.id || `${reply.parent_comment_id}-${replyIndex}`} elevation={3}>
         <Box

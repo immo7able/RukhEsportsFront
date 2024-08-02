@@ -65,7 +65,7 @@ const NewsDetail = ({ isAuthenticated }) => {
         const profileResponse = await getProfile();
         setNickname(profileResponse.data.nickname);
       } catch (error) {
-        console.error('Ошибка при получении профиля:', error);
+        // console.error('Ошибка при получении профиля:', error);
       }
     };
 

@@ -27,13 +27,13 @@ const App = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
-      console.log('Токен в localStorage:', token);
+      // console.log('Токен в localStorage:', token);
       setIsAuthenticated(!!token);
 
       if (token) {
         try {
           const response = await getProfile();
-          console.log('Профиль пользователя:', response.data);
+          // console.log('Профиль пользователя:', response.data);
           if (response.data && response.data.role === 'admin') {
             setIsAdmin(true);
           } else {
@@ -60,8 +60,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Статус авторизации (isAuthenticated):', isAuthenticated);
-    console.log('Статус администратора (isAdmin):', isAdmin);
+    // console.log('Статус авторизации (isAuthenticated):', isAuthenticated);
+    // console.log('Статус администратора (isAdmin):', isAdmin);
   }, [isAuthenticated, isAdmin]);
 
   if (isLoading) {
