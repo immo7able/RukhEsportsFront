@@ -47,8 +47,8 @@ const TeamManagement = () => {
   };
 
   return (
-    <Box>
-      <Grid container spacing={2}>
+    <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item>
           <Button sx={buttonStyle} variant="contained" onClick={handleOpenCreateTeam}>Создать команду</Button>
         </Grid>

@@ -5,24 +5,23 @@ import { getComments, deleteComment } from '../../api/comments';
 import { getNews } from '../../api/news';
 
 const CommentPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: 'rgba(23, 54, 50, 0.85)',
-  padding: '30px',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  padding: '20px',
   borderRadius: '10px',
-  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-  marginBottom: '30px',
+  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)',
+  marginBottom: '20px',
   color: 'white',
-  position: 'relative',
 }));
 
 const ReplyPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: 'rgba(23, 54, 50, 0.75)',
-  border: '0.9px solid white',
-  padding: '20px',
+  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
+  padding: '15px',
   borderRadius: '10px',
-  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-  marginBottom: '20px',
+  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.7)',
+  marginBottom: '15px',
   color: 'white',
-  marginLeft: '40px',
+  marginLeft: '30px',
 }));
 
 const Comments = () => {
@@ -77,12 +76,12 @@ const Comments = () => {
               alt={reply.nickname} 
               sx={{ width: 30, height: 30, mr: 1 }} 
             />
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'white' }}>
               {reply.nickname}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="subtitle2" sx={{ mr: 1 }}>
+            <Typography variant="subtitle2" sx={{ mr: 1, color: 'white' }}>
               {new Date(reply.date).toLocaleDateString()}
             </Typography>
             <Button variant="contained" color="error" onClick={() => handleDelete(reply.id)}>
@@ -90,7 +89,7 @@ const Comments = () => {
             </Button>
           </Box>
         </Box>
-        <Typography variant="body2" sx={{ mb: 2 }}>
+        <Typography variant="body2" sx={{ mb: 2, color: 'white' }}>
           {reply.content}
         </Typography>
       </ReplyPaper>
@@ -114,12 +113,12 @@ const Comments = () => {
               alt={comment.nickname} 
               sx={{ width: 40, height: 40, mr: 1 }} 
             />
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'white ' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'white' }}>
               {comment.nickname}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1, color: 'white' }}>
               {new Date(comment.date).toLocaleDateString()}
             </Typography>
             <Button variant="contained" color="error" onClick={() => handleDelete(comment.id)}>
@@ -127,7 +126,7 @@ const Comments = () => {
             </Button>
           </Box>
         </Box>
-        <Typography variant="body1" sx={{ mb: 2 }}>
+        <Typography variant="body1" sx={{ mb: 2, color: 'white' }}>
           {comment.content}
         </Typography>
         {comment.replies && comment.replies.length > 0 && renderReplies(comment.replies)}
@@ -140,28 +139,56 @@ const Comments = () => {
   );
 
   return (
-    <Box sx={{ p: 3, bgcolor: 'rgba(23, 54, 50, 0.75)', borderRadius: '8px', boxShadow: 3 }}>
-     
+    <Box sx={{ p: 4, maxWidth: '900px', mx: 'auto', bgcolor: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(10px)', borderRadius: 3, boxShadow: 3 }}>
       <TextField
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Начните вводить название новости, чтобы отфильтровать"
         variant="outlined"
         fullWidth
-        sx={{ mb: 3, bgcolor: 'rgba(23, 54, 50)', input: { color: 'white' }, '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: 'white' }, '&.Mui-focused fieldset': { borderColor: 'white' } } }}
+        sx={{
+          mb: 3,
+          bgcolor: 'rgba(255, 255, 255, 0.2)',
+          input: { color: 'white' },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)' },
+            '&:hover fieldset': { borderColor: 'white' },
+            '&.Mui-focused fieldset': { borderColor: 'white' },
+          },
+        }}
+        InputLabelProps={{ style: { color: 'white' } }}
       />
       <Select
         value={selectedNews}
         onChange={(e) => setSelectedNews(e.target.value)}
         displayEmpty
         fullWidth
-        sx={{ mb: 3, color: 'white', bgcolor: 'rgba(23, 54, 50)' }}
+        sx={{
+          mb: 3,
+          color: 'white',
+          bgcolor: 'rgba(255, 255, 255, 0.2)',
+          '& .MuiSelect-icon': { color: 'white' },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)' },
+            '&:hover fieldset': { borderColor: 'white' },
+            '&.Mui-focused fieldset': { borderColor: 'white' },
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            style: {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              color: 'white',
+            },
+          },
+        }}
       >
         <MenuItem value="" disabled>
           Выберите новость из общего списка
         </MenuItem>
         {filteredNews.map(newsItem => (
-          <MenuItem key={newsItem.id} value={newsItem.id}>
+          <MenuItem key={newsItem.id} value={newsItem.id} sx={{ color: 'white' }}>
             {newsItem.title}
           </MenuItem>
         ))}

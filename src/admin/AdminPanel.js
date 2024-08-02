@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Tabs, Tab, Box, Typography, useMediaQuery } from '@mui/material';
+import { Container, Tabs, Tab, Box, Typography, useMediaQuery, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NewsManagement from './news/NewsManagement';
 import MatchManagement from './matches/MatchManagement';
@@ -9,8 +9,6 @@ import CoverManagement from './CoverManagement';
 import CarouselManagement from './CarouselManagement';
 import Comments from './news/Comments';
 import NotesManagement from './NotesManagement';
-
-
 
 const AdminPanel = () => {
   const [value, setValue] = React.useState(0);
@@ -22,14 +20,12 @@ const AdminPanel = () => {
   };
 
   const tabStyle = {
-    fontSize: 20,
+    fontSize: 16,
     color: '#FFFFFF',
-    p: 2,
-    boxShadow: 3,
+    px: 2,
+    py: 1,
     borderRadius: 2,
-    m: isSmallScreen ? 1 : 2,
-    bgcolor: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
+    transition: '0.3s',
     '&:hover': {
       bgcolor: 'rgba(255, 255, 255, 0.4)',
     },
@@ -49,47 +45,55 @@ const AdminPanel = () => {
       <Box
         sx={{
           width: '100%',
-          maxWidth: '1400px',
+          maxWidth: isSmallScreen ? '100%' : '1600px',
           bgcolor: 'rgba(255, 255, 255, 0.2)',
           backdropFilter: 'blur(10px)',
           borderRadius: 3,
           boxShadow: 3,
           p: 4,
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          flexDirection: isSmallScreen ? 'column' : 'row',
+          alignItems: 'flex-start',
         }}
       >
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          allowScrollButtonsMobile
+        <Box
           sx={{
-            maxWidth: '100%',
-            '& .MuiTab-root': {
-              fontWeight: 'bold',
-              color: '#FFFFFF',
-              '&.Mui-selected': {
-                color: '#FFFFFF',
-              },
-            },
-            '& .MuiTabs-indicator': {
-              backgroundColor: '#FFFFFF',
-            },
+            display: 'flex',
+            flexDirection: isSmallScreen ? 'row' : 'column',
+            width: isSmallScreen ? '100%' : '20%',
+            alignItems: 'center',
+            mb: isSmallScreen ? 2 : 0,
           }}
         >
-          <Tab sx={tabStyle} label="Новости" />
-          <Tab sx={tabStyle} label="Комментарии" />
-          <Tab sx={tabStyle} label="Команды и игроки" />
-          <Tab sx={tabStyle} label="Турниры" />
-          <Tab sx={tabStyle} label="Матчи" />
-          <Tab sx={tabStyle} label="Обложки" />
-          <Tab sx={tabStyle} label="Карусель главная" />
-          <Tab sx={tabStyle} label="Памятка использования" />
-        </Tabs>
-        <Box sx={{ width: '100%' }}>
+          <Tabs
+            orientation={isSmallScreen ? 'horizontal' : 'vertical'}
+            value={value}
+            onChange={handleChange}
+            sx={{
+              '& .MuiTab-root': {
+                fontWeight: 'bold',
+                color: '#FFFFFF',
+                '&.Mui-selected': {
+                  color: '#FFFFFF',
+                },
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#FFFFFF',
+              },
+              width: '100%',
+            }}
+          >
+            <Tab sx={tabStyle} label="Новости" />
+            <Tab sx={tabStyle} label="Комментарии" />
+            <Tab sx={tabStyle} label="Команды и игроки" />
+            <Tab sx={tabStyle} label="Турниры" />
+            <Tab sx={tabStyle} label="Матчи" />
+            <Tab sx={tabStyle} label="Обложки" />
+            <Tab sx={tabStyle} label="Карусель главная" />
+            <Tab sx={tabStyle} label="Памятка использования" />
+          </Tabs>
+        </Box>
+        <Box sx={{ flexGrow: 1, width: '100%' }}>
           <TabPanel value={value} index={0}>
             <NewsManagement />
           </TabPanel>
