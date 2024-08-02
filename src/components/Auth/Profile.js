@@ -214,22 +214,29 @@ const Profile = () => {
             />
           </Button>
           {isAdmin && (
-  <Button
-    variant="contained"
-    sx={{
-      backgroundColor: '#008e82',
-      borderRadius: '30px',
-      color: '#fff',
-      width: 90,
-      height: 50,
-      minWidth: 'auto',
-      '&:hover': { backgroundColor: '#006f69' },
-      marginLeft: 4,
-    }}
-    onClick={handleGoToAdminPanel}
-  >
-    Админка
-  </Button>
+            <Button
+  variant="outlined"
+  sx={{
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: '30px',
+    color: '#FFFFFF',
+    width: '48%',
+    height: 50,
+    minWidth: 'auto',
+    fontWeight: 'bold',
+    textTransform: 'none',
+    borderColor: '#FFFFFF',
+    '&:hover': {
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      borderColor: '#FFFFFF',
+    },
+    marginLeft: 4,
+  }}
+  onClick={handleGoToAdminPanel}
+>
+  Админка
+</Button>
+
 )}
 
         </Box>
